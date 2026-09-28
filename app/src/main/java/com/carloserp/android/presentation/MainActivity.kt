@@ -15,16 +15,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Single-Activity host (task 49.1).
+ * Single-Activity host (tasks 49.1/49.3).
  *
- * [AndroidEntryPoint] lets Hilt inject dependencies into this activity (and the
- * Compose ViewModels reached from it). The Compose content is wrapped in the
- * app's Material 3 theme. Real navigation + feature screens land in tasks 50.x;
- * for now it renders a placeholder to keep the scaffold runnable.
+ * [AndroidEntryPoint] lets Hilt inject into this activity and the Compose
+ * ViewModels reached from it. The screen obtains its [MainViewModel] via
+ * `hiltViewModel()` and renders its state — the end-to-end DI wiring. Real
+ * navigation + feature screens arrive in tasks 50.x.
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             CarlosErpTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PlaceholderScreen(modifier = Modifier.padding(innerPadding))
+                    val viewModel = hiltViewModel<MainViewModel>()
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    HomeScreen(state = uiState, modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -42,21 +46,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun PlaceholderScreen(modifier: Modifier = Modifier) {
+private fun HomeScreen(state: MainUiState, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = "Carlos ERP", style = MaterialTheme.typography.headlineMedium)
-        Text(text = "Android client", style = MaterialTheme.typography.bodyMedium)
+        Text(text = state.title, style = MaterialTheme.typography.headlineMedium)
+        Text(text = state.subtitle, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PlaceholderScreenPreview() {
+private fun HomeScreenPreview() {
     CarlosErpTheme {
-        PlaceholderScreen()
+        HomeScreen(state = MainUiState())
     }
 }
