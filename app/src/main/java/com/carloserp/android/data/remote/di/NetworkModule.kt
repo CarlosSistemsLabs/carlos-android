@@ -1,6 +1,7 @@
 package com.carloserp.android.data.remote.di
 
 import com.carloserp.android.BuildConfig
+import com.carloserp.android.data.remote.api.AuthApi
 import com.carloserp.android.data.remote.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -72,4 +73,8 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(json.asConverterFactory(CONTENT_TYPE))
             .build()
+
+    @Provides
+    @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 }

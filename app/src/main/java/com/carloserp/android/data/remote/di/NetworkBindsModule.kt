@@ -1,7 +1,8 @@
 package com.carloserp.android.data.remote.di
 
+import com.carloserp.android.core.auth.SessionStore
 import com.carloserp.android.core.network.TokenProvider
-import com.carloserp.android.data.remote.token.InMemoryTokenProvider
+import com.carloserp.android.data.remote.token.EncryptedTokenStore
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -9,11 +10,14 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Binds network-layer interface implementations (task 49.2).
+ * Binds network/auth-layer interface implementations (tasks 49.2 / 50.1).
  *
- * [TokenProvider] is currently backed by the in-memory implementation; task
- * 50.1 repoints this binding to the encrypted, persistent one with no change to
- * consumers (the [com.carloserp.android.data.remote.interceptor.AuthInterceptor]).
+ * The single [EncryptedTokenStore] singleton backs both the wide [SessionStore]
+ * (used by the auth flow to persist/clear tokens) and the narrow [TokenProvider]
+ * (read by the [com.carloserp.android.data.remote.interceptor.AuthInterceptor]),
+ * replacing the in-memory provider from task 49.2. Both binds resolve to the
+ * same instance, so a login persisted through [SessionStore] is immediately
+ * visible to the interceptor.
  */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -21,5 +25,9 @@ abstract class NetworkBindsModule {
 
     @Binds
     @Singleton
-    abstract fun bindTokenProvider(impl: InMemoryTokenProvider): TokenProvider
+    abstract fun bindSessionStore(impl: EncryptedTokenStore): SessionStore
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenProvider(impl: EncryptedTokenStore): TokenProvider
 }

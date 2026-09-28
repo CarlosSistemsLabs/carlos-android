@@ -1,30 +1,58 @@
 package com.carloserp.android.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.carloserp.android.domain.usecase.LogoutUseCase
+import com.carloserp.android.domain.usecase.ObserveAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** Immutable UI state for the host screen. */
+/**
+ * Immutable UI state for the host screen (tasks 49.3 / 50.1).
+ *
+ * [isResolvingSession] is `true` until the first auth-state emission arrives, so
+ * the host can show a splash instead of briefly flashing the login screen.
+ */
 data class MainUiState(
     val title: String = "Carlos ERP",
     val subtitle: String = "Android client",
+    val isLoggedIn: Boolean = false,
+    val isResolvingSession: Boolean = true,
 )
 
 /**
- * Host-screen ViewModel (task 49.3).
+ * Host-screen ViewModel (tasks 49.3 / 50.1).
  *
- * Annotated with [HiltViewModel] so it is provided by Hilt and obtained in
- * Compose via `hiltViewModel()` — proving the end-to-end DI chain
- * (`@HiltAndroidApp` → `@AndroidEntryPoint` activity → `@HiltViewModel`). It
- * exposes UI state as an immutable [StateFlow]; feature ViewModels will inject
- * their use cases here following the same pattern.
+ * Observes the app-level auth state via [ObserveAuthStateUseCase] and exposes it
+ * as [uiState] so [MainActivity] picks between the login and home screens, and
+ * offers [logout]. Login itself is handled by the login feature; when it
+ * persists a session this flow re-emits and the host switches automatically.
  */
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    observeAuthState: ObserveAuthStateUseCase,
+    private val logoutUseCase: LogoutUseCase,
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MainUiState())
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<MainUiState> =
+        observeAuthState()
+            .map { loggedIn -> MainUiState(isLoggedIn = loggedIn, isResolvingSession = false) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+                initialValue = MainUiState(),
+            )
+
+    fun logout() {
+        viewModelScope.launch { logoutUseCase() }
+    }
+
+    private companion object {
+        const val STOP_TIMEOUT_MILLIS = 5_000L
+    }
 }
