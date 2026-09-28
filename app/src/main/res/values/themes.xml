@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Launch theme used by the manifest before Compose takes over the window.
+      Uses a framework Material theme (no ActionBar) so no Material Components
+      XML dependency is required; the in-app UI is themed by CarlosErpTheme.
+    -->
+    <style name="Theme.CarlosERP" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
