@@ -8,33 +8,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.presentation.components.CarlosPasswordField
+import com.carloserp.android.presentation.components.CarlosTextField
+import com.carloserp.android.presentation.components.PrimaryButton
 import com.carloserp.android.presentation.theme.CarlosErpTheme
+import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
- * Login screen (task 50.1).
+ * Login screen (tasks 50.1 / 50.2).
  *
  * A stateless [LoginContent] rendered from [LoginUiState], with the stateful
- * entry point obtaining its [LoginViewModel] via Hilt. On a successful login the
- * repository persists the session and the app-level auth state (observed by the
- * host) switches away from this screen, so there is no explicit navigation here.
+ * entry point obtaining its [LoginViewModel] via Hilt. Built from the shared
+ * design-system components ([CarlosTextField]/[CarlosPasswordField]/
+ * [PrimaryButton]) and spacing tokens. On a successful login the repository
+ * persists the session and the app-level auth state switches away from this
+ * screen, so there is no explicit navigation here.
  */
 @Composable
 fun LoginScreen(
@@ -61,11 +62,12 @@ private fun LoginContent(
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val spacing = CarlosTheme.spacing
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 32.dp),
+            .padding(horizontal = spacing.lg, vertical = spacing.xl),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -74,49 +76,37 @@ private fun LoginContent(
             text = "Iniciá sesión en tu workspace",
             style = MaterialTheme.typography.bodyMedium,
         )
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(spacing.xl))
 
-        OutlinedTextField(
+        CarlosTextField(
             value = state.workspaceId,
             onValueChange = onWorkspaceChange,
-            label = { Text("Workspace ID") },
-            singleLine = true,
+            label = "Workspace ID",
             enabled = !state.isSubmitting,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            modifier = Modifier.fillMaxWidth(),
+            imeAction = ImeAction.Next,
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(spacing.md))
 
-        OutlinedTextField(
+        CarlosTextField(
             value = state.email,
             onValueChange = onEmailChange,
-            label = { Text("Email") },
-            singleLine = true,
+            label = "Email",
             enabled = !state.isSubmitting,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next,
-            ),
-            modifier = Modifier.fillMaxWidth(),
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next,
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(spacing.md))
 
-        OutlinedTextField(
+        CarlosPasswordField(
             value = state.password,
             onValueChange = onPasswordChange,
-            label = { Text("Contraseña") },
-            singleLine = true,
+            label = "Contraseña",
             enabled = !state.isSubmitting,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done,
-            ),
-            modifier = Modifier.fillMaxWidth(),
+            imeAction = ImeAction.Done,
         )
 
         if (state.errorMessage != null) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(spacing.md))
             Text(
                 text = state.errorMessage,
                 color = MaterialTheme.colorScheme.error,
@@ -126,22 +116,13 @@ private fun LoginContent(
             )
         }
 
-        Spacer(Modifier.height(24.dp))
-        Button(
+        Spacer(Modifier.height(spacing.lg))
+        PrimaryButton(
+            text = "Ingresar",
             onClick = onSubmit,
             enabled = state.canSubmit,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            if (state.isSubmitting) {
-                CircularProgressIndicator(
-                    modifier = Modifier.height(20.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            } else {
-                Text("Ingresar")
-            }
-        }
+            loading = state.isSubmitting,
+        )
     }
 }
 
