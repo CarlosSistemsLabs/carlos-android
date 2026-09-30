@@ -22,6 +22,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Deep links: carloserp://app/<ruta> (task 50.3). Compose Navigation
+                 matches the concrete pattern per destination via navDeepLink. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="carloserp" android:host="app" />
+            </intent-filter>
         </activity>
     </application>
 

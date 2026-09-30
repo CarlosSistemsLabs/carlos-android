@@ -34,6 +34,7 @@ compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 # Lifecycle + Navigation
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
@@ -72,7 +73,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
 [bundles]
-compose = ["compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview", "compose-material3"]
+compose = ["compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview", "compose-material3", "compose-material-icons-extended"]
 lifecycle = ["androidx-lifecycle-runtime-compose", "androidx-lifecycle-viewmodel-compose"]
 networking = ["retrofit", "retrofit-kotlinx-serialization", "okhttp", "okhttp-logging", "kotlinx-serialization-json"]
 room = ["room-runtime", "room-ktx"]

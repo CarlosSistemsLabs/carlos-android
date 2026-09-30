@@ -1,0 +1,56 @@
+package com.carloserp.android.presentation.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.PointOfSale
+import androidx.compose.material.icons.filled.Warehouse
+import androidx.compose.ui.graphics.vector.ImageVector
+
+/**
+ * Base URI for app deep links (task 50.3).
+ *
+ * Destinations register a link like `carloserp://app/products`, and the
+ * `MainActivity` intent-filter declares the same scheme/host so an external link
+ * opens the matching screen.
+ */
+const val DEEP_LINK_SCHEME = "carloserp"
+const val DEEP_LINK_HOST = "app"
+private const val DEEP_LINK_PREFIX = "$DEEP_LINK_SCHEME://$DEEP_LINK_HOST"
+
+/**
+ * Every navigation destination in the app (task 50.3).
+ *
+ * A sealed hierarchy so routes are referenced by type, not loose strings. Each
+ * declares its [route] and a [deepLink] built from the shared prefix.
+ * [TopLevel] destinations additionally carry the [label]/[icon] shown in the
+ * bottom navigation bar; [TopLevel.entries] is their fixed, ordered list.
+ */
+sealed class Destination(val route: String) {
+    val deepLink: String get() = "$DEEP_LINK_PREFIX/$route"
+
+    /** Login screen shown while signed out (outside the bottom-nav shell). */
+    data object Login : Destination("login")
+
+    /** A destination that appears as a tab in the bottom navigation bar. */
+    sealed class TopLevel(
+        route: String,
+        val label: String,
+        val icon: ImageVector,
+    ) : Destination(route) {
+        data object Dashboard : TopLevel("dashboard", "Inicio", Icons.Filled.Dashboard)
+        data object Products : TopLevel("products", "Productos", Icons.Filled.Inventory2)
+        data object Sales : TopLevel("sales", "Ventas", Icons.Filled.PointOfSale)
+        data object Customers : TopLevel("customers", "Clientes", Icons.Filled.Group)
+        data object Stock : TopLevel("stock", "Stock", Icons.Filled.Warehouse)
+
+        companion object {
+            /** Ordered tabs for the bottom navigation bar. */
+            val entries: List<TopLevel> = listOf(Dashboard, Products, Sales, Customers, Stock)
+
+            /** The tab shown first after signing in. */
+            val start: TopLevel = Dashboard
+        }
+    }
+}

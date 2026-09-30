@@ -19,8 +19,6 @@ import javax.inject.Inject
  * the host can show a splash instead of briefly flashing the login screen.
  */
 data class MainUiState(
-    val title: String = "Carlos ERP",
-    val subtitle: String = "Android client",
     val isLoggedIn: Boolean = false,
     val isResolvingSession: Boolean = true,
 )
