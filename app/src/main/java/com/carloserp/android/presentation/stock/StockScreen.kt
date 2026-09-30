@@ -21,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carloserp.android.domain.model.StockLevel
 import com.carloserp.android.presentation.components.EmptyView
-import com.carloserp.android.presentation.components.UiStateContent
+import com.carloserp.android.presentation.components.RefreshableUiState
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
@@ -35,7 +35,13 @@ fun StockScreen(
     viewModel: StockViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    UiStateContent(state = uiState, modifier = modifier, onRetry = viewModel::load) { levels ->
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    RefreshableUiState(
+        state = uiState,
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refresh,
+        modifier = modifier,
+    ) { levels ->
         if (levels.isEmpty()) {
             EmptyView(message = "No hay información de stock todavía.")
         } else {

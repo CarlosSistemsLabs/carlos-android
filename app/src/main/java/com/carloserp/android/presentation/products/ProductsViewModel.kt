@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -36,6 +37,11 @@ class ProductsViewModel @Inject constructor(
     /** Non-blocking refresh error shown as a banner when the cache is non-empty. */
     val refreshError: StateFlow<String?> = error
 
+    private val _isRefreshing = MutableStateFlow(false)
+
+    /** Drives the pull-to-refresh indicator (separate from the empty-state loading). */
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     val uiState: StateFlow<UiState<List<Product>>> =
         combine(repository.observeProducts(), loading, error) { products, isLoading, errorMessage ->
             when {
@@ -57,12 +63,14 @@ class ProductsViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             loading.value = true
+            _isRefreshing.value = true
             error.value = null
             when (val result = repository.refreshProducts()) {
                 is ApiResult.Success -> Unit
                 is ApiResult.Failure -> error.value = result.error.toUserMessage()
             }
             loading.value = false
+            _isRefreshing.value = false
         }
     }
 

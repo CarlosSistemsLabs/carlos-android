@@ -20,6 +20,7 @@ import com.carloserp.android.core.format.formatMoney
 import com.carloserp.android.domain.model.Product
 import com.carloserp.android.presentation.common.UiState
 import com.carloserp.android.presentation.components.EmptyView
+import com.carloserp.android.presentation.components.RefreshableUiState
 import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import com.carloserp.android.presentation.theme.CarlosTheme
@@ -39,7 +40,13 @@ fun ProductsScreen(
     viewModel: ProductsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    UiStateContent(state = uiState, modifier = modifier, onRetry = viewModel::refresh) { products ->
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    RefreshableUiState(
+        state = uiState,
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refresh,
+        modifier = modifier,
+    ) { products ->
         if (products.isEmpty()) {
             EmptyView(message = "Todavía no hay productos cargados.")
         } else {

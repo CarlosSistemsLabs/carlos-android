@@ -26,17 +26,34 @@ class CustomersViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<List<Customer>>>(UiState.Loading)
     val uiState: StateFlow<UiState<List<Customer>>> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init {
         load()
     }
 
+    /** Initial load: shows the full-screen loading state. */
     fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            _uiState.value = when (val result = repository.getCustomers()) {
-                is ApiResult.Success -> UiState.Success(result.data)
-                is ApiResult.Failure -> UiState.Error(result.error.toUserMessage())
-            }
+            fetch()
+        }
+    }
+
+    /** Pull-to-refresh: keeps current content and shows the refresh indicator. */
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            fetch()
+            _isRefreshing.value = false
+        }
+    }
+
+    private suspend fun fetch() {
+        _uiState.value = when (val result = repository.getCustomers()) {
+            is ApiResult.Success -> UiState.Success(result.data)
+            is ApiResult.Failure -> UiState.Error(result.error.toUserMessage())
         }
     }
 }

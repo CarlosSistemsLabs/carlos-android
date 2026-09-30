@@ -18,6 +18,7 @@ import com.carloserp.android.core.format.formatAmount
 import com.carloserp.android.domain.model.DashboardMetrics
 import com.carloserp.android.presentation.common.UiState
 import com.carloserp.android.presentation.components.MetricCard
+import com.carloserp.android.presentation.components.RefreshableUiState
 import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import com.carloserp.android.presentation.theme.CarlosTheme
@@ -32,7 +33,13 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    UiStateContent(state = uiState, modifier = modifier, onRetry = viewModel::load) { metrics ->
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    RefreshableUiState(
+        state = uiState,
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refresh,
+        modifier = modifier,
+    ) { metrics ->
         DashboardContent(metrics = metrics)
     }
 }

@@ -26,17 +26,34 @@ class SalesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<List<Sale>>>(UiState.Loading)
     val uiState: StateFlow<UiState<List<Sale>>> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init {
         load()
     }
 
+    /** Initial load: shows the full-screen loading state. */
     fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            _uiState.value = when (val result = repository.getSales()) {
-                is ApiResult.Success -> UiState.Success(result.data)
-                is ApiResult.Failure -> UiState.Error(result.error.toUserMessage())
-            }
+            fetch()
+        }
+    }
+
+    /** Pull-to-refresh (also used after creating a sale): keeps current content. */
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            fetch()
+            _isRefreshing.value = false
+        }
+    }
+
+    private suspend fun fetch() {
+        _uiState.value = when (val result = repository.getSales()) {
+            is ApiResult.Success -> UiState.Success(result.data)
+            is ApiResult.Failure -> UiState.Error(result.error.toUserMessage())
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.carloserp.android.presentation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -13,22 +15,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.carloserp.android.presentation.components.CarlosTopAppBar
+import com.carloserp.android.presentation.components.OfflineBanner
 import com.carloserp.android.presentation.navigation.BottomNavBar
 import com.carloserp.android.presentation.navigation.CarlosNavHost
 import com.carloserp.android.presentation.navigation.Destination
 
 /**
- * Authenticated app shell (task 50.3).
+ * Authenticated app shell (tasks 50.3 / 50.5).
  *
  * Hosts the [CarlosNavHost] inside a [Scaffold] with a title bar (whose title
  * tracks the current tab) and the [BottomNavBar]. The top bar exposes a logout
  * action; signing out clears the session and the host ([MainActivity]) swaps
- * back to the login screen.
+ * back to the login screen. An [OfflineBanner] sits above the content when
+ * [isOffline] is true.
  */
 @Composable
 fun MainScreen(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
+    isOffline: Boolean = false,
     navController: NavHostController = rememberNavController(),
 ) {
     val currentEntry by navController.currentBackStackEntryAsState()
@@ -59,9 +64,12 @@ fun MainScreen(
             if (isTopLevel) BottomNavBar(navController)
         },
     ) { innerPadding ->
-        CarlosNavHost(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding),
-        )
+        Column(modifier = Modifier.padding(innerPadding)) {
+            OfflineBanner(visible = isOffline)
+            CarlosNavHost(
+                navController = navController,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
 }

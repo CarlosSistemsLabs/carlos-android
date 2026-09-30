@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
                     uiState.isLoggedIn ->
                         MainScreen(
                             onLogout = viewModel::logout,
+                            isOffline = uiState.isOffline,
                             modifier = Modifier.fillMaxSize(),
                         )
 
