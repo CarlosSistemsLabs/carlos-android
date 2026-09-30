@@ -3,9 +3,9 @@ package com.carloserp.android.presentation.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carloserp.android.core.network.ApiResult
-import com.carloserp.android.core.network.NetworkError
 import com.carloserp.android.core.network.isUnauthorized
 import com.carloserp.android.domain.usecase.LoginUseCase
+import com.carloserp.android.presentation.common.toUserMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,20 +74,16 @@ class LoginViewModel @Inject constructor(
                 is ApiResult.Success ->
                     _uiState.update { it.copy(isSubmitting = false) }
 
-                is ApiResult.Failure ->
-                    _uiState.update {
-                        it.copy(isSubmitting = false, errorMessage = result.error.toMessage())
+                is ApiResult.Failure -> {
+                    // On the login screen a 401 means bad credentials, not an expired session.
+                    val message = if (result.error.isUnauthorized) {
+                        "Credenciales inválidas. Verificá el workspace, email y contraseña."
+                    } else {
+                        result.error.toUserMessage()
                     }
+                    _uiState.update { it.copy(isSubmitting = false, errorMessage = message) }
+                }
             }
         }
     }
-}
-
-/** Maps a typed [NetworkError] to a short, user-facing message. */
-private fun NetworkError.toMessage(): String = when {
-    isUnauthorized -> "Credenciales inválidas. Verificá el workspace, email y contraseña."
-    this is NetworkError.Http -> "Error del servidor ($code). Intentá de nuevo."
-    this is NetworkError.Connection -> "Sin conexión. Revisá tu internet e intentá de nuevo."
-    this is NetworkError.Serialization -> "Respuesta inesperada del servidor."
-    else -> "Ocurrió un error. Intentá de nuevo."
 }

@@ -1,30 +1,29 @@
 package com.carloserp.android.presentation.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.carloserp.android.presentation.theme.CarlosTheme
+import com.carloserp.android.presentation.customers.CustomerDetailScreen
+import com.carloserp.android.presentation.customers.CustomersScreen
+import com.carloserp.android.presentation.dashboard.DashboardScreen
+import com.carloserp.android.presentation.products.ProductDetailScreen
+import com.carloserp.android.presentation.products.ProductsScreen
+import com.carloserp.android.presentation.sales.SaleCreateScreen
+import com.carloserp.android.presentation.sales.SalesScreen
+import com.carloserp.android.presentation.stock.StockScreen
 
 /**
- * Navigation graph for the authenticated shell (task 50.3).
+ * Navigation graph for the authenticated shell (tasks 50.3 / 50.4).
  *
- * Registers one composable per [Destination.TopLevel], each with a
- * [navDeepLink] so an external `carloserp://app/<route>` URI opens the matching
- * tab. Screens are placeholders for now; the real feature UIs replace them in
- * task 50.4. The graph starts at [Destination.TopLevel.start] (Dashboard).
+ * Registers the five bottom-nav destinations (each with a `carloserp://app/<route>`
+ * deep link) plus the detail/create screens they push. Detail/create screens
+ * render their own top bar (with back), so [MainScreen] only shows its shared
+ * top/bottom bars on the top-level destinations.
  */
 @Composable
 fun CarlosNavHost(
@@ -36,37 +35,68 @@ fun CarlosNavHost(
         startDestination = Destination.TopLevel.start.route,
         modifier = modifier,
     ) {
-        Destination.TopLevel.entries.forEach { destination ->
-            composable(
-                route = destination.route,
-                deepLinks = listOf(navDeepLink { uriPattern = destination.deepLink }),
-            ) {
-                PlaceholderScreen(title = destination.label)
-            }
+        composable(
+            route = Destination.TopLevel.Dashboard.route,
+            deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Dashboard.deepLink }),
+        ) {
+            DashboardScreen()
         }
-    }
-}
 
-/**
- * Temporary content for a not-yet-built feature screen (task 50.3). Replaced by
- * the real screens in task 50.4.
- */
-@Composable
-private fun PlaceholderScreen(title: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(CarlosTheme.spacing.xl),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(text = title, style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(CarlosTheme.spacing.sm))
-        Text(
-            text = "Próximamente",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
+        composable(
+            route = Destination.TopLevel.Products.route,
+            deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Products.deepLink }),
+        ) {
+            ProductsScreen(
+                onProductClick = { id ->
+                    navController.navigate(Destination.ProductDetail.createRoute(id))
+                },
+            )
+        }
+
+        composable(
+            route = Destination.ProductDetail.route,
+            arguments = listOf(navArgument(Destination.ProductDetail.ARG) { type = NavType.StringType }),
+        ) {
+            ProductDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(
+            route = Destination.TopLevel.Sales.route,
+            deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Sales.deepLink }),
+        ) {
+            SalesScreen(onCreateClick = { navController.navigate(Destination.SaleCreate.route) })
+        }
+
+        composable(route = Destination.SaleCreate.route) {
+            SaleCreateScreen(
+                onBack = { navController.popBackStack() },
+                onCreated = { navController.popBackStack() },
+            )
+        }
+
+        composable(
+            route = Destination.TopLevel.Customers.route,
+            deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Customers.deepLink }),
+        ) {
+            CustomersScreen(
+                onCustomerClick = { id ->
+                    navController.navigate(Destination.CustomerDetail.createRoute(id))
+                },
+            )
+        }
+
+        composable(
+            route = Destination.CustomerDetail.route,
+            arguments = listOf(navArgument(Destination.CustomerDetail.ARG) { type = NavType.StringType }),
+        ) {
+            CustomerDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(
+            route = Destination.TopLevel.Stock.route,
+            deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Stock.deepLink }),
+        ) {
+            StockScreen()
+        }
     }
 }

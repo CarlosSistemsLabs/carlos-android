@@ -33,6 +33,21 @@ sealed class Destination(val route: String) {
     /** Login screen shown while signed out (outside the bottom-nav shell). */
     data object Login : Destination("login")
 
+    /** Product detail, reached from the products list. Arg: [ARG] product id. */
+    data object ProductDetail : Destination("products/{productId}") {
+        const val ARG = "productId"
+        fun createRoute(productId: String): String = "products/$productId"
+    }
+
+    /** Customer detail, reached from the customers list. Arg: [ARG] customer id. */
+    data object CustomerDetail : Destination("customers/{customerId}") {
+        const val ARG = "customerId"
+        fun createRoute(customerId: String): String = "customers/$customerId"
+    }
+
+    /** New-sale form, reached from the sales list. */
+    data object SaleCreate : Destination("sales/new")
+
     /** A destination that appears as a tab in the bottom navigation bar. */
     sealed class TopLevel(
         route: String,

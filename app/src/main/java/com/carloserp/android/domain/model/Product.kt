@@ -1,18 +1,26 @@
 package com.carloserp.android.domain.model
 
 /**
- * Product domain model (task 49.4).
+ * Product domain model (tasks 49.4 / 50.4).
  *
- * Framework-free representation used by the UI/domain layers. Money is kept as
- * integer cents ([priceCents]) to avoid floating-point rounding, mirroring the
- * backend's Money value object. This is the minimal shape needed to prepare the
- * offline cache; the full product feature (task 50.4) extends it as needed.
+ * Framework-free representation used by the UI/domain layers, matching the
+ * backend product contract. Money fields ([price], [cost], [priceWithTax]) are
+ * kept as decimal strings exactly as the API sends them (no floating point);
+ * format them for display with `formatMoney`.
  */
 data class Product(
     val id: String,
-    val name: String,
+    val categoryId: String,
     val sku: String,
-    val priceCents: Long,
-    /** Epoch millis of the last known update (used for cache freshness). */
-    val updatedAt: Long,
+    val name: String,
+    val description: String?,
+    val price: String,
+    val cost: String?,
+    val currency: String,
+    val taxRate: Double,
+    val priceWithTax: String,
+    val unit: String,
+    val minStock: Int,
+    val isActive: Boolean,
+    val imageUrl: String?,
 )

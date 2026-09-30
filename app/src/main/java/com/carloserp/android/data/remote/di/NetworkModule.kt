@@ -2,6 +2,11 @@ package com.carloserp.android.data.remote.di
 
 import com.carloserp.android.BuildConfig
 import com.carloserp.android.data.remote.api.AuthApi
+import com.carloserp.android.data.remote.api.CustomerApi
+import com.carloserp.android.data.remote.api.ProductApi
+import com.carloserp.android.data.remote.api.ReportApi
+import com.carloserp.android.data.remote.api.SaleApi
+import com.carloserp.android.data.remote.api.StockApi
 import com.carloserp.android.data.remote.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -77,4 +82,24 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideProductApi(retrofit: Retrofit): ProductApi = retrofit.create(ProductApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCustomerApi(retrofit: Retrofit): CustomerApi = retrofit.create(CustomerApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSaleApi(retrofit: Retrofit): SaleApi = retrofit.create(SaleApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideStockApi(retrofit: Retrofit): StockApi = retrofit.create(StockApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideReportApi(retrofit: Retrofit): ReportApi = retrofit.create(ReportApi::class.java)
 }

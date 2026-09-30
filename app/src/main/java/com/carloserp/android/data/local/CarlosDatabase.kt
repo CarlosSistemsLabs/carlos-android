@@ -22,7 +22,9 @@ abstract class CarlosDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
 
     companion object {
-        const val DATABASE_VERSION = 1
+        // v2 (task 50.4): product row aligned to the backend contract (decimal-string
+        // money, category/unit/tax fields). Rebuilt via destructive migration.
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "carlos.db"
     }
 }

@@ -33,23 +33,30 @@ fun MainScreen(
     val currentEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentEntry?.destination?.route
     val currentTab = Destination.TopLevel.entries.firstOrNull { it.route == currentRoute }
+    // Detail/create screens are not top-level; they render their own top bar and
+    // have no bottom nav, so the shell hides its shared bars for them.
+    val isTopLevel = currentTab != null
 
     Scaffold(
         modifier = modifier,
         topBar = {
-            CarlosTopAppBar(
-                title = currentTab?.label ?: Destination.TopLevel.start.label,
-                actions = {
-                    IconButton(onClick = onLogout) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Cerrar sesión",
-                        )
-                    }
-                },
-            )
+            currentTab?.let { tab ->
+                CarlosTopAppBar(
+                    title = tab.label,
+                    actions = {
+                        IconButton(onClick = onLogout) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = "Cerrar sesión",
+                            )
+                        }
+                    },
+                )
+            }
         },
-        bottomBar = { BottomNavBar(navController) },
+        bottomBar = {
+            if (isTopLevel) BottomNavBar(navController)
+        },
     ) { innerPadding ->
         CarlosNavHost(
             navController = navController,
