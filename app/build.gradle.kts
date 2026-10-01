@@ -9,15 +9,19 @@ plugins {
     alias(libs.plugins.ktlint)
     // On the build classpath but applied conditionally below (task 51.1).
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }
 
-// Apply the Google Services plugin only when a google-services.json is present,
+// Apply the Firebase Gradle plugins only when a google-services.json is present,
 // so the project still builds without Firebase credentials (task 51.1).
 // Per-environment config (task 51): the debug build (applicationId
 // com.carloserp.android.debug) reads app/src/debug/google-services.json (TEST
 // project), the release build (com.carloserp.android) reads
 // app/src/release/google-services.json (PRODUCTION). A single app/google-services.json
 // also works as a fallback for all variants. All of these are gitignored.
+// The Crashlytics plugin is REQUIRED whenever the Crashlytics SDK is active: it
+// injects the build-id resource the SDK reads at startup (without it the app
+// crashes in FirebaseInitProvider).
 val googleServicesConfigs = listOf(
     "google-services.json",
     "src/debug/google-services.json",
@@ -25,6 +29,7 @@ val googleServicesConfigs = listOf(
 )
 if (googleServicesConfigs.any { file(it).exists() }) {
     apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
 }
 
 android {

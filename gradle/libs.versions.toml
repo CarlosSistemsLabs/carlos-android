@@ -20,6 +20,7 @@ securityCrypto = "1.1.0-alpha06"
 datastore = "1.1.1"
 firebaseBom = "33.7.0"
 googleServices = "4.4.2"
+firebaseCrashlytics = "3.0.3"
 detekt = "1.23.7"
 ktlint = "12.1.2"
 junit = "4.13.2"
@@ -96,3 +97,4 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
