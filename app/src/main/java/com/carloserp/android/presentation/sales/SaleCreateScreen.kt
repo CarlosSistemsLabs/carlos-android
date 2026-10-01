@@ -38,8 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carloserp.android.core.format.formatMoney
+import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.domain.model.Product
+import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.PrimaryButton
 import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.common.UiState
@@ -60,6 +62,7 @@ fun SaleCreateScreen(
     modifier: Modifier = Modifier,
     viewModel: SaleCreateViewModel = hiltViewModel(),
 ) {
+    TrackScreenView(AnalyticsScreens.SALE_CREATE)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.created) {

@@ -21,8 +21,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.core.format.formatMoney
 import com.carloserp.android.domain.model.Product
+import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.SectionCard
 import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.theme.CarlosTheme
@@ -41,6 +43,7 @@ fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
+    TrackScreenView(AnalyticsScreens.PRODUCT_DETAIL)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(
         modifier = modifier,

@@ -21,6 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.core.analytics.AnalyticsScreens
+import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.CarlosPasswordField
 import com.carloserp.android.presentation.components.CarlosTextField
 import com.carloserp.android.presentation.components.PrimaryButton
@@ -42,6 +44,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
+    TrackScreenView(AnalyticsScreens.LOGIN)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LoginContent(
         state = uiState,

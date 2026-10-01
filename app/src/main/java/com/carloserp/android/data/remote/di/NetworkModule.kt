@@ -8,6 +8,7 @@ import com.carloserp.android.data.remote.api.ReportApi
 import com.carloserp.android.data.remote.api.SaleApi
 import com.carloserp.android.data.remote.api.StockApi
 import com.carloserp.android.data.remote.interceptor.AuthInterceptor
+import com.carloserp.android.data.remote.interceptor.PerformanceInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,10 +61,12 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
+        performanceInterceptor: PerformanceInterceptor,
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .addInterceptor(performanceInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)

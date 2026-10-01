@@ -2,6 +2,9 @@ package com.carloserp.android.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carloserp.android.core.analytics.AnalyticsEvents
+import com.carloserp.android.core.analytics.AnalyticsService
+import com.carloserp.android.core.crash.CrashReporter
 import com.carloserp.android.core.network.NetworkMonitor
 import com.carloserp.android.domain.usecase.LogoutUseCase
 import com.carloserp.android.domain.usecase.ObserveAuthStateUseCase
@@ -38,6 +41,8 @@ class MainViewModel @Inject constructor(
     observeAuthState: ObserveAuthStateUseCase,
     networkMonitor: NetworkMonitor,
     private val logoutUseCase: LogoutUseCase,
+    private val analytics: AnalyticsService,
+    private val crashReporter: CrashReporter,
 ) : ViewModel() {
 
     val uiState: StateFlow<MainUiState> =
@@ -54,7 +59,12 @@ class MainViewModel @Inject constructor(
         )
 
     fun logout() {
-        viewModelScope.launch { logoutUseCase() }
+        viewModelScope.launch {
+            analytics.logEvent(AnalyticsEvents.LOGOUT)
+            logoutUseCase()
+            analytics.setUser(null, null)
+            crashReporter.setUser(null, null)
+        }
     }
 
     private companion object {

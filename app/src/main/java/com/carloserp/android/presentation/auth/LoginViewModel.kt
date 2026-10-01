@@ -2,6 +2,9 @@ package com.carloserp.android.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carloserp.android.core.analytics.AnalyticsEvents
+import com.carloserp.android.core.analytics.AnalyticsService
+import com.carloserp.android.core.crash.CrashReporter
 import com.carloserp.android.core.network.ApiResult
 import com.carloserp.android.core.network.isUnauthorized
 import com.carloserp.android.domain.usecase.LoginUseCase
@@ -45,6 +48,8 @@ data class LoginUiState(
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val analytics: AnalyticsService,
+    private val crashReporter: CrashReporter,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -71,8 +76,13 @@ class LoginViewModel @Inject constructor(
                 password = state.password,
             )
             when (result) {
-                is ApiResult.Success ->
+                is ApiResult.Success -> {
+                    val user = result.data.user
+                    analytics.setUser(user.id, user.tenantId)
+                    analytics.logEvent(AnalyticsEvents.LOGIN)
+                    crashReporter.setUser(user.id, user.tenantId)
                     _uiState.update { it.copy(isSubmitting = false) }
+                }
 
                 is ApiResult.Failure -> {
                     // On the login screen a 401 means bad credentials, not an expired session.

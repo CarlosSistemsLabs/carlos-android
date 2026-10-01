@@ -1,0 +1,30 @@
+{
+  "_comment": "Task 51.1 — SAMPLE ONLY. This file documents the shape of the real Firebase config; it is NOT used by the build. Create a Firebase project, add the Android apps (applicationId com.carloserp.android and the .debug variant com.carloserp.android.debug), download the real google-services.json for each environment, and place it at app/google-services.json (TEST) — the Gradle build applies the Google Services plugin automatically when that file exists. The real google-services.json is gitignored; never commit it.",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "carlos-erp-test",
+    "storage_bucket": "carlos-erp-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.carloserp.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_REAL_ANDROID_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

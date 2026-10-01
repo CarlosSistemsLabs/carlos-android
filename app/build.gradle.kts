@@ -7,6 +7,15 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
+    // On the build classpath but applied conditionally below (task 51.1).
+    alias(libs.plugins.google.services) apply false
+}
+
+// Apply the Google Services plugin only when a google-services.json is present,
+// so the project still builds without Firebase credentials (task 51.1). Drop the
+// per-environment file into app/ (or app/src/<flavor>/) to enable Firebase.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 android {
@@ -88,6 +97,14 @@ dependencies {
     // Secure token storage (encrypted) + preferences — see task 50.1
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.datastore.preferences)
+
+    // Firebase (Analytics / Crashlytics / Performance) — see task 51. Versions
+    // come from the BOM. Works with graceful no-op fallback until a
+    // google-services.json is provided (then the plugin above activates it).
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.performance)
 
     // Compose tooling (debug only)
     debugImplementation(libs.compose.ui.tooling)

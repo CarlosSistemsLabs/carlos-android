@@ -14,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.core.format.formatAmount
 import com.carloserp.android.domain.model.DashboardMetrics
+import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.common.UiState
 import com.carloserp.android.presentation.components.MetricCard
 import com.carloserp.android.presentation.components.RefreshableUiState
@@ -32,6 +34,7 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
+    TrackScreenView(AnalyticsScreens.DASHBOARD)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     RefreshableUiState(

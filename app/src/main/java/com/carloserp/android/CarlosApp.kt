@@ -1,14 +1,22 @@
 package com.carloserp.android
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 /**
- * Application entry point (task 49.1).
+ * Application entry point (tasks 49.1 / 51.1).
  *
- * Annotated with [HiltAndroidApp] so Hilt generates the application-level
- * dependency container and can inject into activities/ViewModels across the app
- * (DI is wired in task 49.3). Kept intentionally empty otherwise.
+ * [HiltAndroidApp] generates the application-level DI container. On startup it
+ * also initializes Firebase: [FirebaseApp.initializeApp] is a no-op that returns
+ * `null` (without throwing) when no `google-services.json` is bundled, so the
+ * app runs fine without Firebase credentials and the Analytics/Crashlytics/
+ * Performance services degrade to no-ops (see `core/firebase`).
  */
 @HiltAndroidApp
-class CarlosApp : Application()
+class CarlosApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)
+    }
+}

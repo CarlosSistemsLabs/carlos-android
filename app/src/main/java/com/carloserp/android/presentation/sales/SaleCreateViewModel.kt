@@ -2,6 +2,8 @@ package com.carloserp.android.presentation.sales
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carloserp.android.core.analytics.AnalyticsEvents
+import com.carloserp.android.core.analytics.AnalyticsService
 import com.carloserp.android.core.network.ApiResult
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.domain.model.NewSale
@@ -52,6 +54,7 @@ class SaleCreateViewModel @Inject constructor(
     private val saleRepository: SaleRepository,
     private val customerRepository: CustomerRepository,
     private val productRepository: ProductRepository,
+    private val analytics: AnalyticsService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SaleCreateUiState())
@@ -106,7 +109,10 @@ class SaleCreateViewModel @Inject constructor(
             _uiState.update { it.copy(submitting = true, submitError = null) }
             val newSale = NewSale(customerId = customerId, items = items, status = "completed")
             when (val result = saleRepository.createSale(newSale)) {
-                is ApiResult.Success -> _uiState.update { it.copy(submitting = false, created = true) }
+                is ApiResult.Success -> {
+                    analytics.logEvent(AnalyticsEvents.SALE_CREATED)
+                    _uiState.update { it.copy(submitting = false, created = true) }
+                }
                 is ApiResult.Failure ->
                     _uiState.update {
                         it.copy(submitting = false, submitError = result.error.toUserMessage())

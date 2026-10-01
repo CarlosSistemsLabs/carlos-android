@@ -15,7 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.domain.model.Customer
+import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.EmptyView
 import com.carloserp.android.presentation.components.RefreshableUiState
 import com.carloserp.android.presentation.theme.CarlosTheme
@@ -31,6 +33,7 @@ fun CustomersScreen(
     modifier: Modifier = Modifier,
     viewModel: CustomersViewModel = hiltViewModel(),
 ) {
+    TrackScreenView(AnalyticsScreens.CUSTOMERS)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     RefreshableUiState(
