@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.carloserp.android.R
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
@@ -21,7 +23,7 @@ import com.carloserp.android.presentation.theme.CarlosTheme
 fun OfflineBanner(visible: Boolean, modifier: Modifier = Modifier) {
     AnimatedVisibility(visible = visible, modifier = modifier) {
         Text(
-            text = "Sin conexión. Mostrando datos guardados.",
+            text = stringResource(R.string.offline_banner),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onErrorContainer,
             textAlign = TextAlign.Center,

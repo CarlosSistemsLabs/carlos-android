@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -28,6 +29,7 @@ fun BottomNavBar(navController: NavHostController, modifier: Modifier = Modifier
     NavigationBar(modifier = modifier) {
         Destination.TopLevel.entries.forEach { tab ->
             val selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true
+            val label = stringResource(tab.labelRes)
             NavigationBarItem(
                 selected = selected,
                 onClick = {
@@ -39,8 +41,8 @@ fun BottomNavBar(navController: NavHostController, modifier: Modifier = Modifier
                         restoreState = true
                     }
                 },
-                icon = { Icon(imageVector = tab.icon, contentDescription = tab.label) },
-                label = { Text(tab.label) },
+                icon = { Icon(imageVector = tab.icon, contentDescription = label) },
+                label = { Text(label) },
             )
         }
     }

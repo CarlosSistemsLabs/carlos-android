@@ -1,4 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Carlos ERP</string>
+    <string name="app_name" translatable="false">Carlos ERP</string>
+
+    <!-- Acciones comunes -->
+    <string name="action_retry">Reintentar</string>
+    <string name="action_login">Ingresar</string>
+    <string name="action_logout">Cerrar sesión</string>
+    <string name="action_back">Volver</string>
+
+    <!-- Login -->
+    <string name="login_subtitle">Iniciá sesión en tu workspace</string>
+    <string name="login_workspace">Workspace ID</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_error_invalid_credentials">Credenciales inválidas. Verificá el workspace, email y contraseña.</string>
+
+    <!-- Navegación -->
+    <string name="nav_dashboard">Inicio</string>
+    <string name="nav_products">Productos</string>
+    <string name="nav_sales">Ventas</string>
+    <string name="nav_customers">Clientes</string>
+    <string name="nav_stock">Stock</string>
+
+    <!-- Estados -->
+    <string name="state_error_title">Algo salió mal</string>
+    <string name="state_empty_title">Nada por aquí</string>
+    <string name="offline_banner">Sin conexión. Mostrando datos guardados.</string>
+
+    <!-- Mensajes de error de red -->
+    <string name="error_session_expired">Tu sesión expiró. Iniciá sesión de nuevo.</string>
+    <string name="error_forbidden">Tu plan o permisos no habilitan esta función.</string>
+    <string name="error_not_found">No encontramos lo que buscabas.</string>
+    <string name="error_server">Error del servidor (%1$d). Intentá de nuevo.</string>
+    <string name="error_connection">Sin conexión. Revisá tu internet e intentá de nuevo.</string>
+    <string name="error_serialization">Respuesta inesperada del servidor.</string>
+    <string name="error_unknown">Ocurrió un error. Intentá de nuevo.</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_sales">Ventas</string>
+    <string name="dashboard_revenue">Facturado</string>
+    <string name="dashboard_products">Productos</string>
+    <string name="dashboard_low_stock">Bajo stock</string>
+
+    <!-- Productos -->
+    <string name="products_empty">Todavía no hay productos cargados.</string>
+    <string name="product_title">Producto</string>
+    <string name="product_sku">SKU %1$s</string>
+    <string name="product_row_subtitle">SKU %1$s · %2$s</string>
+    <string name="product_price">Precio</string>
+    <string name="product_price_with_tax">Precio con IVA</string>
+    <string name="product_cost">Costo</string>
+    <string name="product_tax">IVA</string>
+    <string name="product_tax_value">%1$s%%</string>
+    <string name="product_unit">Unidad</string>
+    <string name="product_min_stock">Stock mínimo</string>
+    <string name="product_status">Estado</string>
+    <string name="product_description">Descripción</string>
+    <string name="status_active">Activo</string>
+    <string name="status_inactive">Inactivo</string>
+
+    <!-- Clientes -->
+    <string name="customers_empty">Todavía no hay clientes cargados.</string>
+    <string name="customer_title">Cliente</string>
+    <string name="customer_email">Email</string>
+    <string name="customer_phone">Teléfono</string>
+    <string name="customer_tax_id">CUIT/CUIL</string>
+    <string name="customer_address">Dirección</string>
+    <string name="customer_notes">Notas</string>
+
+    <!-- Ventas -->
+    <string name="sales_empty">Todavía no registraste ventas.</string>
+    <string name="sale_new_title">Nueva venta</string>
+    <string name="sale_customer">Cliente</string>
+    <string name="sale_products">Productos</string>
+    <string name="sale_quantity_short">Cant.</string>
+    <string name="sale_confirm">Confirmar venta</string>
+    <string name="sale_cd_new">Nueva venta</string>
+    <string name="sale_row_subtitle">%1$s · %2$s</string>
+    <string name="sale_status_draft">Borrador</string>
+    <string name="sale_status_completed">Completada</string>
+    <string name="sale_status_cancelled">Cancelada</string>
+
+    <!-- Stock -->
+    <string name="stock_empty">No hay información de stock todavía.</string>
+    <string name="stock_min">Mínimo %1$d</string>
+    <string name="stock_low">Bajo · %1$d</string>
+
+    <!-- Idioma -->
+    <string name="language_label">Idioma</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+    <string name="language_cd">Cambiar idioma</string>
 </resources>

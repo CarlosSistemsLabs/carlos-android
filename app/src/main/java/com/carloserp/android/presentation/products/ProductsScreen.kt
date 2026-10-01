@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.core.format.formatMoney
 import com.carloserp.android.domain.model.Product
@@ -51,7 +53,7 @@ fun ProductsScreen(
         modifier = modifier,
     ) { products ->
         if (products.isEmpty()) {
-            EmptyView(message = "Todavía no hay productos cargados.")
+            EmptyView(message = stringResource(R.string.products_empty))
         } else {
             ProductList(products = products, onProductClick = onProductClick)
         }
@@ -82,7 +84,11 @@ private fun ProductRow(product: Product, onClick: () -> Unit, modifier: Modifier
     ) {
         Text(text = product.name, style = MaterialTheme.typography.bodyLarge)
         Text(
-            text = "SKU ${product.sku} · ${formatMoney(product.price, product.currency)}",
+            text = stringResource(
+                R.string.product_row_subtitle,
+                product.sku,
+                formatMoney(product.price, product.currency),
+            ),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

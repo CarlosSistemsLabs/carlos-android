@@ -11,10 +11,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.carloserp.android.R
 import com.carloserp.android.presentation.components.CarlosTopAppBar
+import com.carloserp.android.presentation.components.LanguageSwitcher
 import com.carloserp.android.presentation.components.OfflineBanner
 import com.carloserp.android.presentation.navigation.BottomNavBar
 import com.carloserp.android.presentation.navigation.CarlosNavHost
@@ -48,12 +51,13 @@ fun MainScreen(
         topBar = {
             currentTab?.let { tab ->
                 CarlosTopAppBar(
-                    title = tab.label,
+                    title = stringResource(tab.labelRes),
                     actions = {
+                        LanguageSwitcher()
                         IconButton(onClick = onLogout) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = "Cerrar sesión",
+                                contentDescription = stringResource(R.string.action_logout),
                             )
                         }
                     },

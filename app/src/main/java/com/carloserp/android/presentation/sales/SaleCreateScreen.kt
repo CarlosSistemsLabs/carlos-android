@@ -33,12 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carloserp.android.core.format.formatMoney
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
+import com.carloserp.android.core.ui.asString
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.domain.model.Product
 import com.carloserp.android.presentation.analytics.TrackScreenView
@@ -74,10 +77,13 @@ fun SaleCreateScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Nueva venta") },
+                title = { Text(stringResource(R.string.sale_new_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
@@ -119,7 +125,7 @@ private fun SaleForm(
         )
 
         Text(
-            text = "Productos",
+            text = stringResource(R.string.sale_products),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(vertical = CarlosTheme.spacing.sm),
         )
@@ -135,9 +141,10 @@ private fun SaleForm(
             }
         }
 
-        if (state.submitError != null) {
+        val submitError = state.submitError
+        if (submitError != null) {
             Text(
-                text = state.submitError,
+                text = submitError.asString(),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(vertical = CarlosTheme.spacing.sm),
@@ -145,7 +152,7 @@ private fun SaleForm(
         }
 
         PrimaryButton(
-            text = "Confirmar venta",
+            text = stringResource(R.string.sale_confirm),
             onClick = onSubmit,
             enabled = state.canSubmit,
             loading = state.submitting,
@@ -169,7 +176,7 @@ private fun CustomerSelector(
             value = selectedName,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Cliente") },
+            label = { Text(stringResource(R.string.sale_customer)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -214,7 +221,7 @@ private fun ProductQuantityRow(
         OutlinedTextField(
             value = if (quantity > 0) quantity.toString() else "",
             onValueChange = { onQuantityChange(it.toIntOrNull() ?: 0) },
-            label = { Text("Cant.") },
+            label = { Text(stringResource(R.string.sale_quantity_short)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.width(96.dp),

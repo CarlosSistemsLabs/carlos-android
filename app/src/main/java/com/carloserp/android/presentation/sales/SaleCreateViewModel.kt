@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.carloserp.android.core.analytics.AnalyticsEvents
 import com.carloserp.android.core.analytics.AnalyticsService
 import com.carloserp.android.core.network.ApiResult
+import com.carloserp.android.core.ui.UiText
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.domain.model.NewSale
 import com.carloserp.android.domain.model.NewSaleItem
@@ -28,13 +29,13 @@ import javax.inject.Inject
  */
 data class SaleCreateUiState(
     val loading: Boolean = true,
-    val loadError: String? = null,
+    val loadError: UiText? = null,
     val customers: List<Customer> = emptyList(),
     val products: List<Product> = emptyList(),
     val selectedCustomerId: String? = null,
     val quantities: Map<String, Int> = emptyMap(),
     val submitting: Boolean = false,
-    val submitError: String? = null,
+    val submitError: UiText? = null,
     val created: Boolean = false,
 ) {
     val canSubmit: Boolean

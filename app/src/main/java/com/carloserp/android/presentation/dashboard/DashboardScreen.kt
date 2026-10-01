@@ -11,9 +11,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.core.format.formatAmount
 import com.carloserp.android.domain.model.DashboardMetrics
@@ -58,24 +60,24 @@ private fun DashboardContent(metrics: DashboardMetrics, modifier: Modifier = Mod
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(CarlosTheme.spacing.md)) {
             MetricCard(
-                label = "Ventas",
+                label = stringResource(R.string.dashboard_sales),
                 value = metrics.salesCount.toString(),
                 modifier = Modifier.weight(1f),
             )
             MetricCard(
-                label = "Facturado",
+                label = stringResource(R.string.dashboard_revenue),
                 value = formatAmount(metrics.salesTotal),
                 modifier = Modifier.weight(1f),
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(CarlosTheme.spacing.md)) {
             MetricCard(
-                label = "Productos",
+                label = stringResource(R.string.dashboard_products),
                 value = metrics.totalProducts.toString(),
                 modifier = Modifier.weight(1f),
             )
             MetricCard(
-                label = "Bajo stock",
+                label = stringResource(R.string.dashboard_low_stock),
                 value = metrics.lowStockCount.toString(),
                 modifier = Modifier.weight(1f),
             )

@@ -15,13 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
+import com.carloserp.android.core.ui.asString
 import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.CarlosPasswordField
 import com.carloserp.android.presentation.components.CarlosTextField
@@ -74,9 +77,9 @@ private fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = "Carlos ERP", style = MaterialTheme.typography.headlineMedium)
+        Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Iniciá sesión en tu workspace",
+            text = stringResource(R.string.login_subtitle),
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(Modifier.height(spacing.xl))
@@ -84,7 +87,7 @@ private fun LoginContent(
         CarlosTextField(
             value = state.workspaceId,
             onValueChange = onWorkspaceChange,
-            label = "Workspace ID",
+            label = stringResource(R.string.login_workspace),
             enabled = !state.isSubmitting,
             imeAction = ImeAction.Next,
         )
@@ -93,7 +96,7 @@ private fun LoginContent(
         CarlosTextField(
             value = state.email,
             onValueChange = onEmailChange,
-            label = "Email",
+            label = stringResource(R.string.login_email),
             enabled = !state.isSubmitting,
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next,
@@ -103,15 +106,16 @@ private fun LoginContent(
         CarlosPasswordField(
             value = state.password,
             onValueChange = onPasswordChange,
-            label = "Contraseña",
+            label = stringResource(R.string.login_password),
             enabled = !state.isSubmitting,
             imeAction = ImeAction.Done,
         )
 
-        if (state.errorMessage != null) {
+        val error = state.errorMessage
+        if (error != null) {
             Spacer(Modifier.height(spacing.md))
             Text(
-                text = state.errorMessage,
+                text = error.asString(),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -121,7 +125,7 @@ private fun LoginContent(
 
         Spacer(Modifier.height(spacing.lg))
         PrimaryButton(
-            text = "Ingresar",
+            text = stringResource(R.string.action_login),
             onClick = onSubmit,
             enabled = state.canSubmit,
             loading = state.isSubmitting,

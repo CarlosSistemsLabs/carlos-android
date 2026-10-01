@@ -3,6 +3,7 @@ package com.carloserp.android.presentation.products
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.carloserp.android.core.network.ApiResult
+import com.carloserp.android.core.ui.UiText
 import com.carloserp.android.domain.model.Product
 import com.carloserp.android.domain.repository.ProductRepository
 import com.carloserp.android.presentation.common.UiState
@@ -32,10 +33,10 @@ class ProductsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val loading = MutableStateFlow(true)
-    private val error = MutableStateFlow<String?>(null)
+    private val error = MutableStateFlow<UiText?>(null)
 
     /** Non-blocking refresh error shown as a banner when the cache is non-empty. */
-    val refreshError: StateFlow<String?> = error
+    val refreshError: StateFlow<UiText?> = error
 
     private val _isRefreshing = MutableStateFlow(false)
 

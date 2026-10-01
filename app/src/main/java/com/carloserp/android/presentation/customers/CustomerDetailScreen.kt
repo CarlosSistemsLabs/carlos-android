@@ -19,8 +19,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.presentation.analytics.TrackScreenView
@@ -45,10 +47,13 @@ fun CustomerDetailScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Cliente") },
+                title = { Text(stringResource(R.string.customer_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
@@ -76,16 +81,19 @@ private fun CustomerDetailContent(customer: Customer, modifier: Modifier = Modif
         Text(text = customer.name, style = MaterialTheme.typography.headlineSmall)
 
         SectionCard {
-            customer.email?.let { DetailRow("Email", it) }
-            customer.phone?.let { DetailRow("Teléfono", it) }
-            customer.taxId?.let { DetailRow("CUIT/CUIL", it) }
-            customer.address?.let { DetailRow("Dirección", it) }
-            DetailRow("Estado", if (customer.isActive) "Activo" else "Inactivo")
+            customer.email?.let { DetailRow(stringResource(R.string.customer_email), it) }
+            customer.phone?.let { DetailRow(stringResource(R.string.customer_phone), it) }
+            customer.taxId?.let { DetailRow(stringResource(R.string.customer_tax_id), it) }
+            customer.address?.let { DetailRow(stringResource(R.string.customer_address), it) }
+            DetailRow(
+                stringResource(R.string.product_status),
+                stringResource(if (customer.isActive) R.string.status_active else R.string.status_inactive),
+            )
         }
 
         customer.notes?.takeIf { it.isNotBlank() }?.let { notes ->
             SectionCard {
-                Text("Notas", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.customer_notes), style = MaterialTheme.typography.titleSmall)
                 Text(
                     text = notes,
                     style = MaterialTheme.typography.bodyMedium,

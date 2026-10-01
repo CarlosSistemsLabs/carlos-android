@@ -12,18 +12,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.carloserp.android.R
+import com.carloserp.android.core.ui.UiText
+import com.carloserp.android.core.ui.asString
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
- * Reusable full-screen state placeholders (task 50.2).
+ * Reusable full-screen state placeholders (tasks 50.2 / 52.1).
  *
  * [LoadingView], [ErrorView] (with a retry action), and [EmptyView] give every
- * screen a consistent look for the three non-content states, so feature screens
- * just branch on their UI state. The richer retry/error handling wiring lands in
- * task 50.5; these are the shared visuals it builds on.
+ * screen a consistent look for the three non-content states. [ErrorView] takes a
+ * localizable [UiText] since its message originates in a ViewModel; titles and
+ * actions come from string resources.
  */
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
@@ -38,15 +42,15 @@ fun LoadingView(modifier: Modifier = Modifier) {
 
 @Composable
 fun ErrorView(
-    message: String,
+    message: UiText,
     modifier: Modifier = Modifier,
     onRetry: (() -> Unit)? = null,
 ) {
     CenteredMessage(
-        title = "Algo salió mal",
-        message = message,
+        title = stringResource(R.string.state_error_title),
+        message = message.asString(),
         modifier = modifier,
-        actionText = if (onRetry != null) "Reintentar" else null,
+        actionText = if (onRetry != null) stringResource(R.string.action_retry) else null,
         onAction = onRetry,
     )
 }
@@ -55,7 +59,7 @@ fun ErrorView(
 fun EmptyView(
     message: String,
     modifier: Modifier = Modifier,
-    title: String = "Nada por aquí",
+    title: String = stringResource(R.string.state_empty_title),
     actionText: String? = null,
     onAction: (() -> Unit)? = null,
 ) {
@@ -102,6 +106,6 @@ private fun CenteredMessage(
 @Composable
 private fun ErrorViewPreview() {
     CarlosErpTheme {
-        ErrorView(message = "No pudimos cargar los datos. Revisá tu conexión.", onRetry = {})
+        ErrorView(message = UiText.Dynamic("No pudimos cargar los datos."), onRetry = {})
     }
 }

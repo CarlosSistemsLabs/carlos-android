@@ -17,8 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.domain.model.StockLevel
 import com.carloserp.android.presentation.analytics.TrackScreenView
@@ -46,7 +48,7 @@ fun StockScreen(
         modifier = modifier,
     ) { levels ->
         if (levels.isEmpty()) {
-            EmptyView(message = "No hay información de stock todavía.")
+            EmptyView(message = stringResource(R.string.stock_empty))
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(items = levels, key = { it.productId + (it.branchId ?: "") }) { level ->
@@ -70,7 +72,7 @@ private fun StockRow(level: StockLevel, modifier: Modifier = Modifier) {
         Column(modifier = Modifier.weight(1f)) {
             Text(text = level.productName, style = MaterialTheme.typography.bodyLarge)
             Text(
-                text = "Mínimo ${level.minStock}",
+                text = stringResource(R.string.stock_min, level.minStock),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -79,7 +81,7 @@ private fun StockRow(level: StockLevel, modifier: Modifier = Modifier) {
             AssistChip(
                 onClick = {},
                 enabled = false,
-                label = { Text("Bajo · ${level.quantity}") },
+                label = { Text(stringResource(R.string.stock_low, level.quantity)) },
                 colors = AssistChipDefaults.assistChipColors(
                     disabledLabelColor = MaterialTheme.colorScheme.error,
                 ),

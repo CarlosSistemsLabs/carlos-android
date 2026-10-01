@@ -19,8 +19,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.core.format.formatMoney
 import com.carloserp.android.domain.model.Product
@@ -49,10 +51,13 @@ fun ProductDetailScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Producto") },
+                title = { Text(stringResource(R.string.product_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
@@ -79,24 +84,35 @@ private fun ProductDetailContent(product: Product, modifier: Modifier = Modifier
     ) {
         Text(text = product.name, style = MaterialTheme.typography.headlineSmall)
         Text(
-            text = "SKU ${product.sku}",
+            text = stringResource(R.string.product_sku, product.sku),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         SectionCard {
-            DetailRow("Precio", formatMoney(product.price, product.currency))
-            DetailRow("Precio con IVA", formatMoney(product.priceWithTax, product.currency))
-            product.cost?.let { DetailRow("Costo", formatMoney(it, product.currency)) }
-            DetailRow("IVA", "${product.taxRate}%")
-            DetailRow("Unidad", product.unit)
-            DetailRow("Stock mínimo", product.minStock.toString())
-            DetailRow("Estado", if (product.isActive) "Activo" else "Inactivo")
+            DetailRow(stringResource(R.string.product_price), formatMoney(product.price, product.currency))
+            DetailRow(
+                stringResource(R.string.product_price_with_tax),
+                formatMoney(product.priceWithTax, product.currency),
+            )
+            product.cost?.let {
+                DetailRow(stringResource(R.string.product_cost), formatMoney(it, product.currency))
+            }
+            DetailRow(
+                stringResource(R.string.product_tax),
+                stringResource(R.string.product_tax_value, product.taxRate.toString()),
+            )
+            DetailRow(stringResource(R.string.product_unit), product.unit)
+            DetailRow(stringResource(R.string.product_min_stock), product.minStock.toString())
+            DetailRow(
+                stringResource(R.string.product_status),
+                stringResource(if (product.isActive) R.string.status_active else R.string.status_inactive),
+            )
         }
 
         product.description?.takeIf { it.isNotBlank() }?.let { description ->
             SectionCard {
-                Text("Descripción", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.product_description), style = MaterialTheme.typography.titleSmall)
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,

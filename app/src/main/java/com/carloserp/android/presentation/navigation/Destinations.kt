@@ -1,5 +1,6 @@
 package com.carloserp.android.presentation.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Group
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.PointOfSale
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.carloserp.android.R
 
 /**
  * Base URI for app deep links (task 50.3).
@@ -51,14 +53,14 @@ sealed class Destination(val route: String) {
     /** A destination that appears as a tab in the bottom navigation bar. */
     sealed class TopLevel(
         route: String,
-        val label: String,
+        @StringRes val labelRes: Int,
         val icon: ImageVector,
     ) : Destination(route) {
-        data object Dashboard : TopLevel("dashboard", "Inicio", Icons.Filled.Dashboard)
-        data object Products : TopLevel("products", "Productos", Icons.Filled.Inventory2)
-        data object Sales : TopLevel("sales", "Ventas", Icons.Filled.PointOfSale)
-        data object Customers : TopLevel("customers", "Clientes", Icons.Filled.Group)
-        data object Stock : TopLevel("stock", "Stock", Icons.Filled.Warehouse)
+        data object Dashboard : TopLevel("dashboard", R.string.nav_dashboard, Icons.Filled.Dashboard)
+        data object Products : TopLevel("products", R.string.nav_products, Icons.Filled.Inventory2)
+        data object Sales : TopLevel("sales", R.string.nav_sales, Icons.Filled.PointOfSale)
+        data object Customers : TopLevel("customers", R.string.nav_customers, Icons.Filled.Group)
+        data object Stock : TopLevel("stock", R.string.nav_stock, Icons.Filled.Warehouse)
 
         companion object {
             /** Ordered tabs for the bottom navigation bar. */

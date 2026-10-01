@@ -20,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.carloserp.android.core.format.formatMoney
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
+import com.carloserp.android.core.format.formatMoney
 import com.carloserp.android.domain.model.Sale
 import com.carloserp.android.presentation.analytics.TrackScreenView
 import com.carloserp.android.presentation.components.EmptyView
@@ -48,7 +50,7 @@ fun SalesScreen(
     Box(modifier = modifier.fillMaxSize()) {
         RefreshableUiState(state = uiState, isRefreshing = isRefreshing, onRefresh = viewModel::refresh) { sales ->
             if (sales.isEmpty()) {
-                EmptyView(message = "Todavía no registraste ventas.")
+                EmptyView(message = stringResource(R.string.sales_empty))
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(items = sales, key = { it.id }) { sale ->
@@ -64,7 +66,7 @@ fun SalesScreen(
                 .align(Alignment.BottomEnd)
                 .padding(CarlosTheme.spacing.md),
         ) {
-            Icon(Icons.Filled.Add, contentDescription = "Nueva venta")
+            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.sale_cd_new))
         }
     }
 }
@@ -81,7 +83,11 @@ private fun SaleRow(sale: Sale, modifier: Modifier = Modifier) {
         Column(modifier = Modifier.weight(1f)) {
             Text(text = sale.saleNumber, style = MaterialTheme.typography.bodyLarge)
             Text(
-                text = "${sale.saleDate.substringBefore('T')} · ${statusLabel(sale.status)}",
+                text = stringResource(
+                    R.string.sale_row_subtitle,
+                    sale.saleDate.substringBefore('T'),
+                    saleStatusLabel(sale.status),
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -94,9 +100,10 @@ private fun SaleRow(sale: Sale, modifier: Modifier = Modifier) {
     }
 }
 
-private fun statusLabel(status: String): String = when (status) {
-    "draft" -> "Borrador"
-    "completed" -> "Completada"
-    "cancelled" -> "Cancelada"
+@Composable
+private fun saleStatusLabel(status: String): String = when (status) {
+    "draft" -> stringResource(R.string.sale_status_draft)
+    "completed" -> stringResource(R.string.sale_status_completed)
+    "cancelled" -> stringResource(R.string.sale_status_cancelled)
     else -> status
 }

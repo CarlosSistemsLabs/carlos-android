@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
 import com.carloserp.android.domain.model.Customer
 import com.carloserp.android.presentation.analytics.TrackScreenView
@@ -43,7 +45,7 @@ fun CustomersScreen(
         modifier = modifier,
     ) { customers ->
         if (customers.isEmpty()) {
-            EmptyView(message = "Todavía no hay clientes cargados.")
+            EmptyView(message = stringResource(R.string.customers_empty))
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(items = customers, key = { it.id }) { customer ->

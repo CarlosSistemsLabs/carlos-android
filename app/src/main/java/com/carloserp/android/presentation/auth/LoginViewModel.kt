@@ -2,11 +2,13 @@ package com.carloserp.android.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsEvents
 import com.carloserp.android.core.analytics.AnalyticsService
 import com.carloserp.android.core.crash.CrashReporter
 import com.carloserp.android.core.network.ApiResult
 import com.carloserp.android.core.network.isUnauthorized
+import com.carloserp.android.core.ui.UiText
 import com.carloserp.android.domain.usecase.LoginUseCase
 import com.carloserp.android.presentation.common.toUserMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +30,7 @@ data class LoginUiState(
     val email: String = "",
     val password: String = "",
     val isSubmitting: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
 ) {
     val canSubmit: Boolean
         get() = !isSubmitting &&
@@ -87,7 +89,7 @@ class LoginViewModel @Inject constructor(
                 is ApiResult.Failure -> {
                     // On the login screen a 401 means bad credentials, not an expired session.
                     val message = if (result.error.isUnauthorized) {
-                        "Credenciales inválidas. Verificá el workspace, email y contraseña."
+                        UiText.res(R.string.login_error_invalid_credentials)
                     } else {
                         result.error.toUserMessage()
                     }
