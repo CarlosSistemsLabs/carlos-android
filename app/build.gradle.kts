@@ -12,9 +12,18 @@ plugins {
 }
 
 // Apply the Google Services plugin only when a google-services.json is present,
-// so the project still builds without Firebase credentials (task 51.1). Drop the
-// per-environment file into app/ (or app/src/<flavor>/) to enable Firebase.
-if (file("google-services.json").exists()) {
+// so the project still builds without Firebase credentials (task 51.1).
+// Per-environment config (task 51): the debug build (applicationId
+// com.carloserp.android.debug) reads app/src/debug/google-services.json (TEST
+// project), the release build (com.carloserp.android) reads
+// app/src/release/google-services.json (PRODUCTION). A single app/google-services.json
+// also works as a fallback for all variants. All of these are gitignored.
+val googleServicesConfigs = listOf(
+    "google-services.json",
+    "src/debug/google-services.json",
+    "src/release/google-services.json",
+)
+if (googleServicesConfigs.any { file(it).exists() }) {
     apply(plugin = "com.google.gms.google-services")
 }
 
