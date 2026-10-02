@@ -112,6 +112,9 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.datastore.preferences)
 
+    // Biometric sign-in (BiometricPrompt + Keystore-backed credential storage)
+    implementation(libs.androidx.biometric)
+
     // Firebase (Analytics / Crashlytics / Performance) — see task 51. Versions
     // come from the BOM. Works with graceful no-op fallback until a
     // google-services.json is provided (then the plugin above activates it).

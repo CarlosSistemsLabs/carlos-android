@@ -21,6 +21,7 @@ datastore = "1.1.1"
 firebaseBom = "33.7.0"
 googleServices = "4.4.2"
 firebaseCrashlytics = "3.0.3"
+biometric = "1.1.0"
 detekt = "1.23.7"
 ktlint = "12.1.2"
 junit = "4.13.2"
@@ -68,6 +69,9 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 # Secure storage (encrypted JWT) + datastore
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+# Biometric auth (fingerprint sign-in)
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 # Firebase (Analytics / Crashlytics / Performance) — versions via the BOM
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }

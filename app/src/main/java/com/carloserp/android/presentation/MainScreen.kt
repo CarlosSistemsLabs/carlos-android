@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.carloserp.android.R
+import com.carloserp.android.presentation.components.BiometricMenuAction
 import com.carloserp.android.presentation.components.CarlosTopAppBar
 import com.carloserp.android.presentation.components.LanguageSwitcher
 import com.carloserp.android.presentation.components.OfflineBanner
@@ -54,6 +55,7 @@ fun MainScreen(
                     title = stringResource(tab.labelRes),
                     actions = {
                         LanguageSwitcher()
+                        BiometricMenuAction()
                         IconButton(onClick = onLogout) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Logout,

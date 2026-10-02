@@ -49,11 +49,14 @@ class EncryptedTokenStore @Inject constructor(
 
     override fun tenantId(): String? = prefs.getString(KEY_TENANT, null)
 
-    override fun saveSession(accessToken: String, refreshToken: String, tenantId: String) {
+    override fun email(): String? = prefs.getString(KEY_EMAIL, null)
+
+    override fun saveSession(accessToken: String, refreshToken: String, tenantId: String, email: String) {
         prefs.edit()
             .putString(KEY_ACCESS, accessToken)
             .putString(KEY_REFRESH, refreshToken)
             .putString(KEY_TENANT, tenantId)
+            .putString(KEY_EMAIL, email)
             .apply()
         _isLoggedIn.value = true
     }
@@ -68,5 +71,6 @@ class EncryptedTokenStore @Inject constructor(
         const val KEY_ACCESS = "access_token"
         const val KEY_REFRESH = "refresh_token"
         const val KEY_TENANT = "tenant_id"
+        const val KEY_EMAIL = "email"
     }
 }

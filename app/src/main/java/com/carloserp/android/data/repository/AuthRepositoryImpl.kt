@@ -50,6 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
                     accessToken = session.accessToken,
                     refreshToken = session.refreshToken,
                     tenantId = session.user.tenantId,
+                    email = session.user.email,
                 )
                 ApiResult.Success(session)
             }

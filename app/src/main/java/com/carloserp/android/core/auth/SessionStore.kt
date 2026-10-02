@@ -20,6 +20,9 @@ interface SessionStore : TokenProvider {
     /** The tenant id bound to the current session, or `null` when signed out. */
     fun tenantId(): String?
 
+    /** The email of the signed-in user, or `null` when signed out. */
+    fun email(): String?
+
     /**
      * Hot stream that is `true` while a session is persisted. Emits the current
      * value on subscription so the UI can decide its start destination.
@@ -27,7 +30,7 @@ interface SessionStore : TokenProvider {
     val isLoggedIn: StateFlow<Boolean>
 
     /** Persists a full session, flipping [isLoggedIn] to `true`. */
-    fun saveSession(accessToken: String, refreshToken: String, tenantId: String)
+    fun saveSession(accessToken: String, refreshToken: String, tenantId: String, email: String)
 
     /** Erases the persisted session, flipping [isLoggedIn] to `false`. */
     fun clear()

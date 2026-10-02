@@ -9,6 +9,7 @@ import com.carloserp.android.core.crash.CrashReporter
 import com.carloserp.android.core.network.ApiResult
 import com.carloserp.android.core.network.isUnauthorized
 import com.carloserp.android.core.ui.UiText
+import com.carloserp.android.data.biometric.BiometricCredentialStore
 import com.carloserp.android.domain.usecase.LoginUseCase
 import com.carloserp.android.presentation.common.toUserMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,7 @@ data class LoginUiState(
     val password: String = "",
     val isSubmitting: Boolean = false,
     val errorMessage: UiText? = null,
+    val biometricEnabled: Boolean = false,
 ) {
     val canSubmit: Boolean
         get() = !isSubmitting &&
@@ -52,9 +54,15 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val analytics: AnalyticsService,
     private val crashReporter: CrashReporter,
+    biometricCredentialStore: BiometricCredentialStore,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(
+        LoginUiState(
+            email = biometricCredentialStore.email().orEmpty(),
+            biometricEnabled = biometricCredentialStore.isEnabled(),
+        ),
+    )
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun onWorkspaceChange(value: String) =
@@ -69,15 +77,29 @@ class LoginViewModel @Inject constructor(
     fun onSubmit() {
         val state = _uiState.value
         if (!state.canSubmit) return
+        performLogin(state.workspaceId.trim(), state.email.trim(), state.password)
+    }
 
+    /** Signs in with credentials recovered from the biometric store. */
+    fun loginWithCredentials(tenantId: String, email: String, password: String) {
+        if (_uiState.value.isSubmitting) return
+        performLogin(tenantId.trim(), email.trim(), password)
+    }
+
+    /** Surfaces an error raised by the biometric flow (e.g. invalidated key). */
+    fun onError(message: UiText) {
+        _uiState.update { it.copy(errorMessage = message) }
+    }
+
+    /** Reflects that biometric sign-in is no longer available (store was cleared). */
+    fun onBiometricDisabled() {
+        _uiState.update { it.copy(biometricEnabled = false) }
+    }
+
+    private fun performLogin(tenantId: String, email: String, password: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
-            val result = loginUseCase(
-                tenantId = state.workspaceId.trim(),
-                email = state.email.trim(),
-                password = state.password,
-            )
-            when (result) {
+            when (val result = loginUseCase(tenantId = tenantId, email = email, password = password)) {
                 is ApiResult.Success -> {
                     val user = result.data.user
                     analytics.setUser(user.id, user.tenantId)

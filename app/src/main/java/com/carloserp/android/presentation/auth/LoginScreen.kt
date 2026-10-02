@@ -1,5 +1,6 @@
 package com.carloserp.android.presentation.auth
 
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,23 +27,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.carloserp.android.R
 import com.carloserp.android.core.analytics.AnalyticsScreens
+import com.carloserp.android.core.biometric.BiometricCrypto
+import com.carloserp.android.core.biometric.canAuthenticateWithBiometrics
+import com.carloserp.android.core.biometric.showBiometricPrompt
+import com.carloserp.android.core.ui.UiText
 import com.carloserp.android.core.ui.asString
+import com.carloserp.android.core.ui.findFragmentActivity
 import com.carloserp.android.presentation.analytics.TrackScreenView
+import com.carloserp.android.presentation.biometric.BiometricEntryPoint
 import com.carloserp.android.presentation.components.CarlosPasswordField
 import com.carloserp.android.presentation.components.CarlosTextField
 import com.carloserp.android.presentation.components.PrimaryButton
+import com.carloserp.android.presentation.components.SecondaryButton
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import com.carloserp.android.presentation.theme.CarlosTheme
+import dagger.hilt.android.EntryPointAccessors
 
 /**
- * Login screen (tasks 50.1 / 50.2).
+ * Login screen (tasks 50.1 / 50.2 / 52.1 + biometric feature).
  *
- * A stateless [LoginContent] rendered from [LoginUiState], with the stateful
- * entry point obtaining its [LoginViewModel] via Hilt. Built from the shared
- * design-system components ([CarlosTextField]/[CarlosPasswordField]/
- * [PrimaryButton]) and spacing tokens. On a successful login the repository
- * persists the session and the app-level auth state switches away from this
- * screen, so there is no explicit navigation here.
+ * Built from the shared design-system components. When biometric sign-in is
+ * enabled and the device has a usable fingerprint, it offers a "Sign in with
+ * fingerprint" action that decrypts the stored credentials (behind a
+ * BiometricPrompt) and performs a normal login. On a successful login the
+ * repository persists the session and the app-level auth state switches away.
  */
 @Composable
 fun LoginScreen(
@@ -49,12 +59,48 @@ fun LoginScreen(
 ) {
     TrackScreenView(AnalyticsScreens.LOGIN)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val store = remember {
+        EntryPointAccessors
+            .fromApplication(context.applicationContext, BiometricEntryPoint::class.java)
+            .biometricCredentialStore()
+    }
+    val biometricAvailable = remember { canAuthenticateWithBiometrics(context) }
+
+    val startBiometricLogin: () -> Unit = startBiometric@{
+        val activity = context.findFragmentActivity() ?: return@startBiometric
+        val iv = store.iv() ?: return@startBiometric
+        val cipher = try {
+            BiometricCrypto.getDecryptCipher(iv)
+        } catch (_: KeyPermanentlyInvalidatedException) {
+            store.clear()
+            viewModel.onBiometricDisabled()
+            viewModel.onError(UiText.res(R.string.biometric_error_invalidated))
+            return@startBiometric
+        }
+        showBiometricPrompt(
+            activity = activity,
+            cipher = cipher,
+            title = activity.getString(R.string.biometric_prompt_title),
+            subtitle = activity.getString(R.string.biometric_prompt_subtitle_login),
+            negativeButton = activity.getString(R.string.biometric_cancel),
+            onSuccess = { authedCipher ->
+                val creds = store.decrypt(authedCipher)
+                viewModel.loginWithCredentials(creds.tenantId, creds.email, creds.password)
+            },
+            onError = { viewModel.onError(UiText.res(R.string.biometric_error_generic)) },
+            onCancel = {},
+        )
+    }
+
     LoginContent(
         state = uiState,
         onWorkspaceChange = viewModel::onWorkspaceChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onSubmit = viewModel::onSubmit,
+        onBiometricLogin = if (uiState.biometricEnabled && biometricAvailable) startBiometricLogin else null,
         modifier = modifier,
     )
 }
@@ -67,6 +113,7 @@ private fun LoginContent(
     onPasswordChange: (String) -> Unit,
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
+    onBiometricLogin: (() -> Unit)? = null,
 ) {
     val spacing = CarlosTheme.spacing
     Column(
@@ -130,6 +177,15 @@ private fun LoginContent(
             enabled = state.canSubmit,
             loading = state.isSubmitting,
         )
+
+        if (onBiometricLogin != null) {
+            Spacer(Modifier.height(spacing.md))
+            SecondaryButton(
+                text = stringResource(R.string.biometric_login_button),
+                onClick = onBiometricLogin,
+                enabled = !state.isSubmitting,
+            )
+        }
     }
 }
 
