@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -32,6 +34,18 @@ if (googleServicesConfigs.any { file(it).exists() }) {
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
+// Google Maps SDK key, read from local.properties (MAPS_API_KEY=...) so it stays
+// out of version control. Falls back to an empty string: the app still builds
+// and runs, the map tiles just stay blank until a real key is supplied.
+val mapsApiKey: String = run {
+    val props = Properties()
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { props.load(it) }
+    }
+    props.getProperty("MAPS_API_KEY", "")
+}
+
 android {
     namespace = "com.carloserp.android"
     compileSdk = 35
@@ -43,6 +57,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -114,6 +129,10 @@ dependencies {
 
     // Biometric sign-in (BiometricPrompt + Keystore-backed credential storage)
     implementation(libs.androidx.biometric)
+
+    // Google Maps (Compose) — red pin on the validated address
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
 
     // Firebase (Analytics / Crashlytics / Performance) — see task 51. Versions
     // come from the BOM. Works with graceful no-op fallback until a

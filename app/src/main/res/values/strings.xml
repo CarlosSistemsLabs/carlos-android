@@ -70,6 +70,18 @@
     <string name="customer_address">Dirección</string>
     <string name="customer_notes">Notas</string>
 
+    <!-- Validación de dirección -->
+    <string name="address_validate_entry">Validar dirección</string>
+    <string name="address_validate_change">Cambiar dirección</string>
+    <string name="address_validation_title">Validar dirección</string>
+    <string name="address_search_label">Buscar dirección</string>
+    <string name="address_search_hint">Ingresá al menos 3 letras</string>
+    <string name="address_selected_label">Dirección seleccionada</string>
+    <string name="address_confirm">Confirmar dirección</string>
+    <string name="address_empty">No encontramos direcciones.</string>
+    <string name="address_not_located">No pudimos ubicar esta dirección en el mapa.</string>
+    <string name="address_pin_cd">Dirección elegida</string>
+
     <!-- Ventas -->
     <string name="sales_empty">Todavía no registraste ventas.</string>
     <string name="sale_new_title">Nueva venta</string>

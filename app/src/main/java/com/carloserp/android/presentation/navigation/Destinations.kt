@@ -56,6 +56,9 @@ sealed class Destination(val route: String) {
     /** New-customer form, reached from the customers list. */
     data object CustomerCreate : Destination("customers/new")
 
+    /** Address-validation screen, reached from the new-customer form. */
+    data object AddressValidation : Destination("addresses/validate")
+
     /** Appearance settings (theme customization). */
     data object Appearance : Destination("settings/appearance")
 

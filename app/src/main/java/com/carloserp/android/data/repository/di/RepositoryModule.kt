@@ -1,11 +1,13 @@
 package com.carloserp.android.data.repository.di
 
+import com.carloserp.android.data.repository.AddressRepositoryImpl
 import com.carloserp.android.data.repository.AuthRepositoryImpl
 import com.carloserp.android.data.repository.CustomerRepositoryImpl
 import com.carloserp.android.data.repository.DashboardRepositoryImpl
 import com.carloserp.android.data.repository.ProductRepositoryImpl
 import com.carloserp.android.data.repository.SaleRepositoryImpl
 import com.carloserp.android.data.repository.StockRepositoryImpl
+import com.carloserp.android.domain.repository.AddressRepository
 import com.carloserp.android.domain.repository.AuthRepository
 import com.carloserp.android.domain.repository.CustomerRepository
 import com.carloserp.android.domain.repository.DashboardRepository
@@ -38,6 +40,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindCustomerRepository(impl: CustomerRepositoryImpl): CustomerRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAddressRepository(impl: AddressRepositoryImpl): AddressRepository
 
     @Binds
     @Singleton

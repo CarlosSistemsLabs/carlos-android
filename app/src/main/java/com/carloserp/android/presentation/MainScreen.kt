@@ -111,6 +111,7 @@ private fun titleForRoute(route: String?): Int? = when (route) {
     Destination.ProductCreate.route -> R.string.product_new_title
     Destination.CustomerDetail.route -> R.string.customer_title
     Destination.CustomerCreate.route -> R.string.customer_new_title
+    Destination.AddressValidation.route -> R.string.address_validation_title
     Destination.SaleCreate.route -> R.string.sale_new_title
     Destination.Appearance.route -> R.string.appearance_title
     else -> null

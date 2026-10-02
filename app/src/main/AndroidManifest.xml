@@ -13,6 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarlosERP">
 
+        <!-- Google Maps SDK key for the address-validation map. The value comes
+             from the MAPS_API_KEY manifest placeholder (set in local.properties
+             as MAPS_API_KEY=..., see app/build.gradle.kts). Without a real key
+             the map tiles stay blank but the app runs. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"

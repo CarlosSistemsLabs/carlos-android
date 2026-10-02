@@ -20,22 +20,38 @@ import com.carloserp.android.R
 import com.carloserp.android.core.ui.asString
 import com.carloserp.android.presentation.components.CarlosTextField
 import com.carloserp.android.presentation.components.PrimaryButton
+import com.carloserp.android.presentation.components.SecondaryButton
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
  * New-customer form (create customers from the app). Header owned by the shell;
  * on success calls [onCreated] to pop back to the list.
+ *
+ * The address is not typed free-form: [onValidateAddress] opens the
+ * address-validation screen, which returns the chosen address through
+ * [validatedAddress]. When a value arrives it is fed into the form and
+ * [onValidatedAddressConsumed] clears it so it is applied only once.
  */
 @Composable
 fun CustomerCreateScreen(
     onCreated: () -> Unit,
+    onValidateAddress: () -> Unit,
     modifier: Modifier = Modifier,
+    validatedAddress: String? = null,
+    onValidatedAddressConsumed: () -> Unit = {},
     viewModel: CustomerCreateViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.created) {
         LaunchedEffect(Unit) { onCreated() }
+    }
+
+    LaunchedEffect(validatedAddress) {
+        if (validatedAddress != null) {
+            viewModel.onAddressChange(validatedAddress)
+            onValidatedAddressConsumed()
+        }
     }
 
     val spacing = CarlosTheme.spacing
@@ -72,12 +88,29 @@ fun CustomerCreateScreen(
             label = stringResource(R.string.customer_tax_id),
             enabled = !state.submitting,
         )
-        CarlosTextField(
-            value = state.address,
-            onValueChange = viewModel::onAddressChange,
-            label = stringResource(R.string.customer_address),
+        if (state.address.isNotBlank()) {
+            Text(
+                text = stringResource(R.string.customer_address),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = state.address,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+        SecondaryButton(
+            text = stringResource(
+                if (state.address.isBlank()) {
+                    R.string.address_validate_entry
+                } else {
+                    R.string.address_validate_change
+                },
+            ),
+            onClick = onValidateAddress,
             enabled = !state.submitting,
         )
+
         CarlosTextField(
             value = state.notes,
             onValueChange = viewModel::onNotesChange,

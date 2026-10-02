@@ -68,6 +68,18 @@
     <string name="customer_address">Address</string>
     <string name="customer_notes">Notes</string>
 
+    <!-- Address validation -->
+    <string name="address_validate_entry">Validate address</string>
+    <string name="address_validate_change">Change address</string>
+    <string name="address_validation_title">Validate address</string>
+    <string name="address_search_label">Search address</string>
+    <string name="address_search_hint">Enter at least 3 characters</string>
+    <string name="address_selected_label">Selected address</string>
+    <string name="address_confirm">Confirm address</string>
+    <string name="address_empty">No addresses found.</string>
+    <string name="address_not_located">We couldn\'t locate this address on the map.</string>
+    <string name="address_pin_cd">Chosen address</string>
+
     <!-- Sales -->
     <string name="sales_empty">You haven\'t registered any sales yet.</string>
     <string name="sale_new_title">New sale</string>

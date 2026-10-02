@@ -1,13 +1,16 @@
 package com.carloserp.android.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.carloserp.android.presentation.address.AddressValidationScreen
 import com.carloserp.android.presentation.appearance.AppearanceScreen
 import com.carloserp.android.presentation.customers.CustomerCreateScreen
 import com.carloserp.android.presentation.customers.CustomerDetailScreen
@@ -28,6 +31,12 @@ import com.carloserp.android.presentation.stock.StockScreen
  * owns the single top bar for every destination, so screens here render content
  * only (no per-screen Scaffold).
  */
+/**
+ * Saved-state key the address-validation screen uses to return the chosen
+ * address to the new-customer form (one-shot result handoff).
+ */
+private const val VALIDATED_ADDRESS_KEY = "validated_address"
+
 @Composable
 fun CarlosNavHost(
     navController: NavHostController,
@@ -93,8 +102,26 @@ fun CarlosNavHost(
         }
 
         // Literal "customers/new" before the "customers/{customerId}" pattern.
-        composable(route = Destination.CustomerCreate.route) {
-            CustomerCreateScreen(onCreated = { navController.popBackStack() })
+        composable(route = Destination.CustomerCreate.route) { entry ->
+            val validatedAddress by entry.savedStateHandle
+                .getStateFlow<String?>(VALIDATED_ADDRESS_KEY, null)
+                .collectAsStateWithLifecycle()
+            CustomerCreateScreen(
+                onCreated = { navController.popBackStack() },
+                onValidateAddress = { navController.navigate(Destination.AddressValidation.route) },
+                validatedAddress = validatedAddress,
+                onValidatedAddressConsumed = { entry.savedStateHandle[VALIDATED_ADDRESS_KEY] = null },
+            )
+        }
+
+        composable(route = Destination.AddressValidation.route) {
+            AddressValidationScreen(
+                onConfirm = { address ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle?.set(VALIDATED_ADDRESS_KEY, address)
+                    navController.popBackStack()
+                },
+            )
         }
 
         composable(
