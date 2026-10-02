@@ -17,8 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.carloserp.android.presentation.appearance.ThemeViewModel
 import com.carloserp.android.presentation.auth.LoginScreen
 import com.carloserp.android.presentation.theme.CarlosErpTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +44,10 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CarlosErpTheme {
+            val themeViewModel = hiltViewModel<ThemeViewModel>()
+            val themePrefs by themeViewModel.prefs.collectAsStateWithLifecycle()
+
+            CarlosErpTheme(backgroundColor = themePrefs.backgroundColor?.let { Color(it) }) {
                 val viewModel = hiltViewModel<MainViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -56,6 +61,8 @@ class MainActivity : FragmentActivity() {
                         MainScreen(
                             onLogout = viewModel::logout,
                             isOffline = uiState.isOffline,
+                            headerTextColor = themePrefs.headerTextColor?.let { Color(it) },
+                            navBarColor = themePrefs.navBarColor?.let { Color(it) },
                             modifier = Modifier.fillMaxSize(),
                         )
 

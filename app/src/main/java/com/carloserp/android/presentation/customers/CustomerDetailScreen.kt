@@ -7,15 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,41 +24,22 @@ import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
- * Customer detail screen (task 50.4). Full screen with its own back-arrow top
- * bar; loads via [CustomerDetailViewModel] through the shared [UiStateContent].
+ * Customer detail content (task 50.4; header owned by the shell after the
+ * detail-header fix). Loads via [CustomerDetailViewModel] through [UiStateContent].
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerDetailScreen(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CustomerDetailViewModel = hiltViewModel(),
 ) {
     TrackScreenView(AnalyticsScreens.CUSTOMER_DETAIL)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    Scaffold(
+    UiStateContent(
+        state = uiState,
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.customer_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        UiStateContent(
-            state = uiState,
-            modifier = Modifier.padding(innerPadding),
-            onRetry = viewModel::load,
-        ) { customer ->
-            CustomerDetailContent(customer = customer)
-        }
+        onRetry = viewModel::load,
+    ) { customer ->
+        CustomerDetailContent(customer = customer)
     }
 }
 

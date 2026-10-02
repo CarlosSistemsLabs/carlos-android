@@ -17,3 +17,15 @@ data class CustomerDto(
     val notes: String? = null,
     val isActive: Boolean = true,
 )
+
+/** Body of `POST /customers` (task: create customers from the app). */
+@Serializable
+data class CreateCustomerDto(
+    val name: String,
+    val email: String? = null,
+    val phone: String? = null,
+    val taxId: String? = null,
+    val address: String? = null,
+    val notes: String? = null,
+    val isActive: Boolean = true,
+)

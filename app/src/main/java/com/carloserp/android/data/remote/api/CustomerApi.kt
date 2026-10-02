@@ -1,8 +1,11 @@
 package com.carloserp.android.data.remote.api
 
+import com.carloserp.android.data.remote.dto.CreateCustomerDto
 import com.carloserp.android.data.remote.dto.CustomerDto
 import com.carloserp.android.data.remote.dto.PagedDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -21,4 +24,7 @@ interface CustomerApi {
 
     @GET("customers/{id}")
     suspend fun get(@Path("id") id: String): CustomerDto
+
+    @POST("customers")
+    suspend fun create(@Body body: CreateCustomerDto): CustomerDto
 }

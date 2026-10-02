@@ -2,6 +2,7 @@ package com.carloserp.android.domain.repository
 
 import com.carloserp.android.core.network.ApiResult
 import com.carloserp.android.domain.model.Customer
+import com.carloserp.android.domain.model.NewCustomer
 
 /**
  * Customer repository port (task 50.4).
@@ -14,4 +15,6 @@ interface CustomerRepository {
     suspend fun getCustomers(): ApiResult<List<Customer>>
 
     suspend fun getCustomer(id: String): ApiResult<Customer>
+
+    suspend fun createCustomer(customer: NewCustomer): ApiResult<Customer>
 }

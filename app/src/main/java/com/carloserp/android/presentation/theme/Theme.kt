@@ -12,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val LightColors = lightColorScheme(
@@ -56,6 +57,7 @@ fun CarlosErpTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     branding: TenantBranding = TenantBranding.None,
+    backgroundColor: Color? = null,
     content: @Composable () -> Unit,
 ) {
     val baseScheme = when {
@@ -67,7 +69,13 @@ fun CarlosErpTheme(
         darkTheme -> DarkColors
         else -> LightColors
     }
-    val colorScheme = baseScheme.withBranding(branding, dark = darkTheme)
+    val branded = baseScheme.withBranding(branding, dark = darkTheme)
+    // User-chosen screen background (task: customize background) overrides the role.
+    val colorScheme = if (backgroundColor != null) {
+        branded.copy(background = backgroundColor)
+    } else {
+        branded
+    }
 
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),

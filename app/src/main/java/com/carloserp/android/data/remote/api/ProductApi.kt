@@ -1,8 +1,11 @@
 package com.carloserp.android.data.remote.api
 
+import com.carloserp.android.data.remote.dto.CreateProductDto
 import com.carloserp.android.data.remote.dto.PagedDto
 import com.carloserp.android.data.remote.dto.ProductDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -24,4 +27,7 @@ interface ProductApi {
 
     @GET("products/{id}")
     suspend fun get(@Path("id") id: String): ProductDto
+
+    @POST("products")
+    suspend fun create(@Body body: CreateProductDto): ProductDto
 }

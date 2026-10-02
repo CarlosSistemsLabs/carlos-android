@@ -1,6 +1,8 @@
 package com.carloserp.android.domain.repository
 
 import com.carloserp.android.core.network.ApiResult
+import com.carloserp.android.domain.model.Category
+import com.carloserp.android.domain.model.NewProduct
 import com.carloserp.android.domain.model.Product
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +24,15 @@ interface ProductRepository {
 
     /** Fetches a single product by id from the backend. */
     suspend fun getProduct(id: String): ApiResult<Product>
+
+    /** Lists the tenant's product categories (for the create-product form). */
+    suspend fun getCategories(): ApiResult<List<Category>>
+
+    /** Creates a new category and returns it. */
+    suspend fun createCategory(name: String): ApiResult<Category>
+
+    /** Creates a new product and refreshes the local cache. */
+    suspend fun createProduct(product: NewProduct): ApiResult<Product>
 
     /** Clears the local product cache (e.g. on sign-out or tenant switch). */
     suspend fun clear()

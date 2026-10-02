@@ -26,3 +26,18 @@ data class ProductDto(
     val isActive: Boolean = true,
     val imageUrl: String? = null,
 )
+
+/** Body of `POST /products` (create products from the app). */
+@Serializable
+data class CreateProductDto(
+    val categoryId: String,
+    val sku: String,
+    val name: String,
+    val price: String,
+    val cost: String? = null,
+    val taxRate: Double? = null,
+    val unit: String? = null,
+    val minStock: Int? = null,
+    val currency: String? = null,
+    val isActive: Boolean = true,
+)

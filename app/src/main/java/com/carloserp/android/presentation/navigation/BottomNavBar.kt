@@ -2,11 +2,13 @@ package com.carloserp.android.presentation.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -22,11 +24,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
  * and [restoreState]/`saveState` so each tab keeps its own scroll/nav position.
  */
 @Composable
-fun BottomNavBar(navController: NavHostController, modifier: Modifier = Modifier) {
+fun BottomNavBar(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    containerColor: Color? = null,
+) {
     val currentEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentEntry?.destination
 
-    NavigationBar(modifier = modifier) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = containerColor ?: NavigationBarDefaults.containerColor,
+    ) {
         Destination.TopLevel.entries.forEach { tab ->
             val selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true
             val label = stringResource(tab.labelRes)

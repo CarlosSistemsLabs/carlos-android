@@ -11,22 +11,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,14 +48,12 @@ import com.carloserp.android.presentation.theme.CarlosTheme
 /**
  * New-sale form (task 50.4).
  *
- * Full screen with its own back-arrow top bar. Lets the user pick a customer and
- * set per-product quantities, then confirm. On success ([SaleCreateUiState.created])
- * it invokes [onCreated] so the host pops back to the refreshed list.
+ * Content for the new-sale form (header owned by the shell). Lets the user pick
+ * a customer and set per-product quantities, then confirm. On success
+ * ([SaleCreateUiState.created]) it invokes [onCreated] so the host pops back.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SaleCreateScreen(
-    onBack: () -> Unit,
     onCreated: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SaleCreateViewModel = hiltViewModel(),
@@ -70,42 +63,25 @@ fun SaleCreateScreen(
 
     if (uiState.created) {
         // Fire the navigation callback once the sale is persisted.
-        androidx.compose.runtime.LaunchedEffect(Unit) { onCreated() }
+        LaunchedEffect(Unit) { onCreated() }
     }
 
-    Scaffold(
+    val listState = when {
+        uiState.loading -> UiState.Loading
+        uiState.loadError != null -> UiState.Error(uiState.loadError!!)
+        else -> UiState.Success(Unit)
+    }
+    UiStateContent(
+        state = listState,
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.sale_new_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        val listState = when {
-            uiState.loading -> UiState.Loading
-            uiState.loadError != null -> UiState.Error(uiState.loadError!!)
-            else -> UiState.Success(Unit)
-        }
-        UiStateContent(
-            state = listState,
-            modifier = Modifier.padding(innerPadding),
-            onRetry = viewModel::loadOptions,
-        ) {
-            SaleForm(
-                state = uiState,
-                onSelectCustomer = viewModel::onSelectCustomer,
-                onQuantityChange = viewModel::onQuantityChange,
-                onSubmit = viewModel::submit,
-            )
-        }
+        onRetry = viewModel::loadOptions,
+    ) {
+        SaleForm(
+            state = uiState,
+            onSelectCustomer = viewModel::onSelectCustomer,
+            onQuantityChange = viewModel::onQuantityChange,
+            onSubmit = viewModel::submit,
+        )
     }
 }
 

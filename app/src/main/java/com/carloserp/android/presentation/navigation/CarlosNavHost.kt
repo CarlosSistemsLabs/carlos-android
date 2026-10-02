@@ -8,9 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.carloserp.android.presentation.appearance.AppearanceScreen
+import com.carloserp.android.presentation.customers.CustomerCreateScreen
 import com.carloserp.android.presentation.customers.CustomerDetailScreen
 import com.carloserp.android.presentation.customers.CustomersScreen
 import com.carloserp.android.presentation.dashboard.DashboardScreen
+import com.carloserp.android.presentation.products.ProductCreateScreen
 import com.carloserp.android.presentation.products.ProductDetailScreen
 import com.carloserp.android.presentation.products.ProductsScreen
 import com.carloserp.android.presentation.sales.SaleCreateScreen
@@ -18,12 +21,12 @@ import com.carloserp.android.presentation.sales.SalesScreen
 import com.carloserp.android.presentation.stock.StockScreen
 
 /**
- * Navigation graph for the authenticated shell (tasks 50.3 / 50.4).
+ * Navigation graph for the authenticated shell (tasks 50.3 / 50.4 + create flows).
  *
  * Registers the five bottom-nav destinations (each with a `carloserp://app/<route>`
- * deep link) plus the detail/create screens they push. Detail/create screens
- * render their own top bar (with back), so [MainScreen] only shows its shared
- * top/bottom bars on the top-level destinations.
+ * deep link) plus the detail/create screens they push. The shell ([MainScreen])
+ * owns the single top bar for every destination, so screens here render content
+ * only (no per-screen Scaffold).
  */
 @Composable
 fun CarlosNavHost(
@@ -50,14 +53,20 @@ fun CarlosNavHost(
                 onProductClick = { id ->
                     navController.navigate(Destination.ProductDetail.createRoute(id))
                 },
+                onCreateClick = { navController.navigate(Destination.ProductCreate.route) },
             )
+        }
+
+        // Literal "products/new" must be registered before the "products/{productId}" pattern.
+        composable(route = Destination.ProductCreate.route) {
+            ProductCreateScreen(onCreated = { navController.popBackStack() })
         }
 
         composable(
             route = Destination.ProductDetail.route,
             arguments = listOf(navArgument(Destination.ProductDetail.ARG) { type = NavType.StringType }),
         ) {
-            ProductDetailScreen(onBack = { navController.popBackStack() })
+            ProductDetailScreen()
         }
 
         composable(
@@ -68,10 +77,7 @@ fun CarlosNavHost(
         }
 
         composable(route = Destination.SaleCreate.route) {
-            SaleCreateScreen(
-                onBack = { navController.popBackStack() },
-                onCreated = { navController.popBackStack() },
-            )
+            SaleCreateScreen(onCreated = { navController.popBackStack() })
         }
 
         composable(
@@ -82,14 +88,20 @@ fun CarlosNavHost(
                 onCustomerClick = { id ->
                     navController.navigate(Destination.CustomerDetail.createRoute(id))
                 },
+                onCreateClick = { navController.navigate(Destination.CustomerCreate.route) },
             )
+        }
+
+        // Literal "customers/new" before the "customers/{customerId}" pattern.
+        composable(route = Destination.CustomerCreate.route) {
+            CustomerCreateScreen(onCreated = { navController.popBackStack() })
         }
 
         composable(
             route = Destination.CustomerDetail.route,
             arguments = listOf(navArgument(Destination.CustomerDetail.ARG) { type = NavType.StringType }),
         ) {
-            CustomerDetailScreen(onBack = { navController.popBackStack() })
+            CustomerDetailScreen()
         }
 
         composable(
@@ -97,6 +109,10 @@ fun CarlosNavHost(
             deepLinks = listOf(navDeepLink { uriPattern = Destination.TopLevel.Stock.deepLink }),
         ) {
             StockScreen()
+        }
+
+        composable(route = Destination.Appearance.route) {
+            AppearanceScreen()
         }
     }
 }

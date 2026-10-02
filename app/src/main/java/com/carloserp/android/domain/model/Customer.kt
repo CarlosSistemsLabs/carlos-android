@@ -14,3 +14,13 @@ data class Customer(
     val notes: String?,
     val isActive: Boolean,
 )
+
+/** Input for creating a customer from the app (only [name] is required). */
+data class NewCustomer(
+    val name: String,
+    val email: String? = null,
+    val phone: String? = null,
+    val taxId: String? = null,
+    val address: String? = null,
+    val notes: String? = null,
+)

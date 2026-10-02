@@ -50,6 +50,15 @@ sealed class Destination(val route: String) {
     /** New-sale form, reached from the sales list. */
     data object SaleCreate : Destination("sales/new")
 
+    /** New-product form, reached from the products list. */
+    data object ProductCreate : Destination("products/new")
+
+    /** New-customer form, reached from the customers list. */
+    data object CustomerCreate : Destination("customers/new")
+
+    /** Appearance settings (theme customization). */
+    data object Appearance : Destination("settings/appearance")
+
     /** A destination that appears as a tab in the bottom navigation bar. */
     sealed class TopLevel(
         route: String,

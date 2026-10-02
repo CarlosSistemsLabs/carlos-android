@@ -43,6 +43,7 @@
     <!-- Products -->
     <string name="products_empty">No products loaded yet.</string>
     <string name="product_title">Product</string>
+    <string name="product_new_title">New product</string>
     <string name="product_sku">SKU %1$s</string>
     <string name="product_row_subtitle">SKU %1$s · %2$s</string>
     <string name="product_price">Price</string>
@@ -60,6 +61,7 @@
     <!-- Customers -->
     <string name="customers_empty">No customers loaded yet.</string>
     <string name="customer_title">Customer</string>
+    <string name="customer_new_title">New customer</string>
     <string name="customer_email">Email</string>
     <string name="customer_phone">Phone</string>
     <string name="customer_tax_id">Tax ID</string>
@@ -83,6 +85,24 @@
     <string name="stock_empty">No stock information yet.</string>
     <string name="stock_min">Min. %1$d</string>
     <string name="stock_low">Low · %1$d</string>
+
+    <!-- Create forms -->
+    <string name="field_name">Name</string>
+    <string name="action_save">Save</string>
+    <string name="product_category">Category</string>
+    <string name="product_category_new">+ New category</string>
+    <string name="product_category_new_hint">Category name</string>
+    <string name="product_create_cd">New product</string>
+    <string name="customer_create_cd">New customer</string>
+    <string name="form_error_generic">Couldn\'t save. Check the data and try again.</string>
+
+    <!-- Appearance (theme) -->
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_menu">Appearance</string>
+    <string name="appearance_background">Screen background</string>
+    <string name="appearance_header_text">Header color</string>
+    <string name="appearance_navbar">Bottom bar color</string>
+    <string name="appearance_reset">Reset</string>
 
     <!-- Language -->
     <string name="language_label">Language</string>

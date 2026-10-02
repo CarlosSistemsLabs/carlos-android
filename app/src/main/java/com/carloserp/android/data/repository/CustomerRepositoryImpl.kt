@@ -6,7 +6,9 @@ import com.carloserp.android.core.network.map
 import com.carloserp.android.core.network.safeApiCall
 import com.carloserp.android.data.remote.api.CustomerApi
 import com.carloserp.android.data.remote.mapper.toDomain
+import com.carloserp.android.data.remote.mapper.toDto
 import com.carloserp.android.domain.model.Customer
+import com.carloserp.android.domain.model.NewCustomer
 import com.carloserp.android.domain.repository.CustomerRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -32,6 +34,11 @@ class CustomerRepositoryImpl @Inject constructor(
     override suspend fun getCustomer(id: String): ApiResult<Customer> =
         withContext(ioDispatcher) {
             safeApiCall { customerApi.get(id) }.map { it.toDomain() }
+        }
+
+    override suspend fun createCustomer(customer: NewCustomer): ApiResult<Customer> =
+        withContext(ioDispatcher) {
+            safeApiCall { customerApi.create(customer.toDto()) }.map { it.toDomain() }
         }
 
     private companion object {

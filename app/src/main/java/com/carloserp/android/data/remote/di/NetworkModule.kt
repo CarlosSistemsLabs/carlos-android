@@ -2,6 +2,7 @@ package com.carloserp.android.data.remote.di
 
 import com.carloserp.android.BuildConfig
 import com.carloserp.android.data.remote.api.AuthApi
+import com.carloserp.android.data.remote.api.CategoryApi
 import com.carloserp.android.data.remote.api.CustomerApi
 import com.carloserp.android.data.remote.api.ProductApi
 import com.carloserp.android.data.remote.api.ReportApi
@@ -89,6 +90,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideProductApi(retrofit: Retrofit): ProductApi = retrofit.create(ProductApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCategoryApi(retrofit: Retrofit): CategoryApi = retrofit.create(CategoryApi::class.java)
 
     @Provides
     @Singleton

@@ -7,8 +7,13 @@ import com.carloserp.android.core.network.safeApiCall
 import com.carloserp.android.data.local.dao.ProductDao
 import com.carloserp.android.data.local.mapper.toDomain
 import com.carloserp.android.data.local.mapper.toEntity
+import com.carloserp.android.data.remote.api.CategoryApi
 import com.carloserp.android.data.remote.api.ProductApi
+import com.carloserp.android.data.remote.dto.CreateCategoryDto
 import com.carloserp.android.data.remote.mapper.toDomain as dtoToDomain
+import com.carloserp.android.data.remote.mapper.toDto
+import com.carloserp.android.domain.model.Category
+import com.carloserp.android.domain.model.NewProduct
 import com.carloserp.android.domain.model.Product
 import com.carloserp.android.domain.repository.ProductRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,6 +36,7 @@ import javax.inject.Singleton
 class ProductRepositoryImpl @Inject constructor(
     private val productDao: ProductDao,
     private val productApi: ProductApi,
+    private val categoryApi: CategoryApi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ProductRepository {
 
@@ -54,6 +60,30 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getProduct(id: String): ApiResult<Product> =
         withContext(ioDispatcher) {
             safeApiCall { productApi.get(id) }.map { it.dtoToDomain() }
+        }
+
+    override suspend fun getCategories(): ApiResult<List<Category>> =
+        withContext(ioDispatcher) {
+            safeApiCall { categoryApi.list() }.map { list -> list.map { it.dtoToDomain() } }
+        }
+
+    override suspend fun createCategory(name: String): ApiResult<Category> =
+        withContext(ioDispatcher) {
+            safeApiCall { categoryApi.create(CreateCategoryDto(name = name)) }.map { it.dtoToDomain() }
+        }
+
+    override suspend fun createProduct(product: NewProduct): ApiResult<Product> =
+        withContext(ioDispatcher) {
+            when (val result = safeApiCall { productApi.create(product.toDto()) }) {
+                is ApiResult.Success -> {
+                    val created = result.data.dtoToDomain()
+                    // Keep the offline cache in sync so the list shows the new product.
+                    productDao.upsertAll(listOf(created.toEntity()))
+                    ApiResult.Success(created)
+                }
+
+                is ApiResult.Failure -> result
+            }
         }
 
     override suspend fun clear() =

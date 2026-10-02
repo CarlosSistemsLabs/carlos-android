@@ -7,15 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,44 +25,23 @@ import com.carloserp.android.presentation.components.UiStateContent
 import com.carloserp.android.presentation.theme.CarlosTheme
 
 /**
- * Product detail screen (task 50.4).
- *
- * A full screen with its own top bar (back arrow) since it lives outside the
- * bottom-nav shell. Loads via [ProductDetailViewModel] and renders through the
+ * Product detail content (task 50.4; header owned by the shell after the
+ * detail-header fix). Loads via [ProductDetailViewModel] and renders through the
  * shared [UiStateContent] (loading/error/retry handled).
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     TrackScreenView(AnalyticsScreens.PRODUCT_DETAIL)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    Scaffold(
+    UiStateContent(
+        state = uiState,
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.product_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        UiStateContent(
-            state = uiState,
-            modifier = Modifier.padding(innerPadding),
-            onRetry = viewModel::load,
-        ) { product ->
-            ProductDetailContent(product = product)
-        }
+        onRetry = viewModel::load,
+    ) { product ->
+        ProductDetailContent(product = product)
     }
 }
 

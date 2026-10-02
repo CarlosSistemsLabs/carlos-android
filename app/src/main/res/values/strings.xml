@@ -45,6 +45,7 @@
     <!-- Productos -->
     <string name="products_empty">Todavía no hay productos cargados.</string>
     <string name="product_title">Producto</string>
+    <string name="product_new_title">Nuevo producto</string>
     <string name="product_sku">SKU %1$s</string>
     <string name="product_row_subtitle">SKU %1$s · %2$s</string>
     <string name="product_price">Precio</string>
@@ -62,6 +63,7 @@
     <!-- Clientes -->
     <string name="customers_empty">Todavía no hay clientes cargados.</string>
     <string name="customer_title">Cliente</string>
+    <string name="customer_new_title">Nuevo cliente</string>
     <string name="customer_email">Email</string>
     <string name="customer_phone">Teléfono</string>
     <string name="customer_tax_id">CUIT/CUIL</string>
@@ -85,6 +87,24 @@
     <string name="stock_empty">No hay información de stock todavía.</string>
     <string name="stock_min">Mínimo %1$d</string>
     <string name="stock_low">Bajo · %1$d</string>
+
+    <!-- Formularios de alta -->
+    <string name="field_name">Nombre</string>
+    <string name="action_save">Guardar</string>
+    <string name="product_category">Categoría</string>
+    <string name="product_category_new">+ Nueva categoría</string>
+    <string name="product_category_new_hint">Nombre de la categoría</string>
+    <string name="product_create_cd">Nuevo producto</string>
+    <string name="customer_create_cd">Nuevo cliente</string>
+    <string name="form_error_generic">No se pudo guardar. Revisá los datos e intentá de nuevo.</string>
+
+    <!-- Apariencia (tema) -->
+    <string name="appearance_title">Apariencia</string>
+    <string name="appearance_menu">Apariencia</string>
+    <string name="appearance_background">Fondo de pantalla</string>
+    <string name="appearance_header_text">Color del encabezado</string>
+    <string name="appearance_navbar">Color de la barra inferior</string>
+    <string name="appearance_reset">Restablecer</string>
 
     <!-- Idioma -->
     <string name="language_label">Idioma</string>
